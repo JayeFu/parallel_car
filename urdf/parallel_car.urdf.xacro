@@ -6,6 +6,7 @@
     <xacro:property name="PI" value="3.1415926536"/>
     <xacro:property name="bar_length" value="1.0"/>
     <xacro:property name="bar_width" value="0.05"/>
+    <xacro:property name="little_width" value="0.001"/>
 
 
     <!-- links -->
@@ -82,6 +83,57 @@
         </visual>
     </link>
 
+    <link name="littleX_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.01"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+            <material name="Chocolate">
+                <color rgba="0.8 0.5 0.125 0.5"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="littleY_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.01"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+            <material name="DarkGreen">
+                <color rgba="0.0 0.5 0.0 0.5"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="littleZ_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.01"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+            <material name="Red">
+                <color rgba="1.0 0.0 0.0 0.5"/>
+            </material>
+        </visual>
+    </link>
+
 
     <!-- joints -->
 
@@ -90,7 +142,7 @@
         <parent link="car_link"/>
         <child link="barX_link"/>
         <axis xyz="1.0 0.0 0.0"/>
-        <limit lower="-0.5" upper="0.5" effort="0.5" velocity="0.5"/>
+        <limit lower="-0.5" upper="0.5" effort="5.0" velocity="0.5"/>
     </joint>
 
     <joint name="barX_to_barY" type="prismatic">
@@ -98,7 +150,7 @@
         <parent link="barX_link"/>
         <child link="barY_link"/>
         <axis xyz="1.0 0.0 0.0"/>
-        <limit lower="-0.5" upper="0.5" effort="0.5" velocity="0.5"/>
+        <limit lower="-0.5" upper="0.5" effort="5.0" velocity="0.5"/>
     </joint>
 
     <joint name="barY_to_barZ" type="prismatic">
@@ -106,7 +158,31 @@
         <parent link="barY_link"/>
         <child link="barZ_link"/>
         <axis xyz="0.0 0.0 1.0"/>
-        <limit lower="-0.5" upper="0.5" effort="0.5" velocity="0.5"/>
+        <limit lower="-0.5" upper="0.5" effort="5.0" velocity="0.5"/>
+    </joint>
+
+    <joint name="barZ_to_littleX" type="revolute">
+        <origin xyz="0.0 0.0 ${bar_length/2.0}" rpy="0.0 0.0 ${-PI/2.0}"/>
+        <parent link="barZ_link"/>
+        <child link="littleX_link"/>
+        <axis xyz="1.0 0.0 0.0"/>
+        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="5.0" velocity="0.5"/>
+    </joint>
+
+    <joint name="littleX_to_littleY" type="revolute">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 ${PI/2.0}"/>
+        <parent link="littleX_link"/>
+        <child link="littleY_link"/>
+        <axis xyz="1.0 0.0 0.0"/>
+        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="5.0" velocity="0.5"/>
+    </joint>
+
+    <joint name="littleY_to_littleZ" type="revolute">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="littleY_link"/>
+        <child link="littleZ_link"/>
+        <axis xyz="0.0 0.0 1.0"/>
+        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="5.0" velocity="0.5"/>
     </joint>
 
 
