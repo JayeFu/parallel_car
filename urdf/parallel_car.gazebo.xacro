@@ -21,6 +21,14 @@
     <gazebo reference="wx_link">
         <material>Gazebo/White</material>
     </gazebo>
+
+    <gazebo reference="down_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="up_link">
+        <material>Gazebo/Orange</material>
+    </gazebo>
     
     <!-- ros_control plugin -->
     <gazebo>

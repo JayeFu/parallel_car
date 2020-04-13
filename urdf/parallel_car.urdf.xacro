@@ -8,6 +8,7 @@
     
     <!--xacro properties-->
     <xacro:property name="car_mass" value="20.0"/>
+    <xacro:property name="car_offset" value="0.23"/>
     <xacro:property name="wx_mass" value="5.0"/>
     <xacro:property name="PI" value="3.1415926536"/>
     <xacro:property name="bar_length" value="1.0"/>
@@ -20,16 +21,16 @@
     <link name="car_link"><!--from origin to top-->
         <visual>
             <geometry>
-	            <mesh filename="package://parallel_car/meshes/car.STL" />
+                <box size="1 0.5 0.36"/>
      	    </geometry>
             <material name="green"/>
-            <origin rpy="${PI/2.0} 0 ${PI/2.0}" xyz="0 0 0.23"/>
+            <origin rpy="0.0 0.0 0.0" xyz="0 0 0.0"/>
         </visual>
         <collision>
             <geometry>
-	            <mesh filename="package://parallel_car/meshes/car.STL" />
+                <box size="1 0.5 0.36"/>
      	    </geometry>
-            <origin rpy="${PI/2.0} 0 ${PI/2.0}" xyz="0 0 0.23"/>
+            <origin rpy="0.0 0.0 0.0" xyz="0 0 0.0"/>
         </collision>
         <inertial>
             <mass value="${car_mass}"/>
@@ -158,7 +159,7 @@
             <geometry>
                 <mesh filename="package://parallel_car/meshes/platform_down.STL" />
             </geometry>
-            <material name="chocolate"/>
+            <material name="grey"/>
         </visual>
         <collision>
             <origin xyz="0.0 0.0 0.0" rpy="${PI/2.0} 0.0 ${PI/2.0}"/>
