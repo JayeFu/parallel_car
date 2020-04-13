@@ -147,6 +147,47 @@
 
     <!-- up and down links -->
 
+    <link name="down_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="${PI/2.0} 0.0 ${PI/2.0}"/>
+            <mass value="0.5"/>
+            <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="0.5"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="${PI/2.0} 0.0 ${PI/2.0}"/>
+            <geometry>
+                <mesh filename="package://parallel_car/meshes/platform_down.STL" />
+            </geometry>
+            <material name="chocolate"/>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="${PI/2.0} 0.0 ${PI/2.0}"/>
+            <geometry>
+                <mesh filename="package://parallel_car/meshes/platform_down.STL" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="up_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="${-PI/2.0} 0.0 ${-PI/6.0}"/>
+            <mass value="0.3"/>
+            <inertia ixx="0.3" ixy="0.0" ixz="0.0" iyy="0.3" iyz="0.0" izz="0.3"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="${-PI/2.0} 0.0 ${-PI/6.0}"/>
+            <geometry>
+                <mesh filename="package://parallel_car/meshes/platform_up.STL" />
+            </geometry>
+            <material name="orange"/>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="${-PI/2.0} 0.0 ${-PI/6.0}"/>
+            <geometry>
+                <mesh filename="package://parallel_car/meshes/platform_up.STL" />
+            </geometry>
+        </collision>
+    </link>
 
     <!-- joints -->
 
@@ -206,11 +247,17 @@
 
     <!-- up and down joints -->
 
-    <!--joint name="car_to_down" type="fixed">
+    <joint name="car_to_down" type="fixed">
         <origin xyz="0.0 0.0 0.18" rpy="0.0 0.0 0.0"/>
         <parent link="car_link"/>
         <child link="down_link"/>
-    </joint-->
+    </joint>
+
+    <joint name="littleY_to_up" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="littleY_link"/>
+        <child link="up_link"/>
+    </joint>
 
 
 </robot>

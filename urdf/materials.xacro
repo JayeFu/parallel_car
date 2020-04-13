@@ -37,4 +37,8 @@
     <color rgba="1.0 1.0 0.0 1.0"/>
   </material>
 
+  <material name="chocolate">
+    <color rgba="${210/255} ${105/255} ${30/255} 1.0"/>
+  </material>
+
 </robot>
