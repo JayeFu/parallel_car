@@ -9,6 +9,8 @@ Panels:
         - /Grid1
         - /RobotModel1
         - /Axes1
+        - /TF1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 544
   - Class: rviz/Selection
@@ -75,7 +77,32 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        barZ_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         car_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        littleX_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        littleY_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        littleZ_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wx_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -90,7 +117,7 @@ Visualization Manager:
       Enabled: true
       Length: 0.5
       Name: Axes
-      Radius: 0.05000000074505806
+      Radius: 0.029999999329447746
       Reference Frame: <Fixed Frame>
       Value: true
     - Class: rviz/TF
@@ -102,7 +129,17 @@ Visualization Manager:
           Value: true
         barY_link:
           Value: true
+        barZ_link:
+          Value: true
         car_link:
+          Value: true
+        littleX_link:
+          Value: true
+        littleY_link:
+          Value: true
+        littleZ_link:
+          Value: true
+        wx_link:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -113,7 +150,12 @@ Visualization Manager:
         car_link:
           barX_link:
             barY_link:
-              {}
+              barZ_link:
+                littleX_link:
+                  littleY_link:
+                    littleZ_link:
+                      wx_link:
+                        {}
       Update Interval: 0
       Value: true
   Enabled: true
@@ -144,25 +186,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.086756229400635
+      Distance: 3.465240240097046
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.13192792236804962
-        Y: -0.12697090208530426
-        Z: -0.003505112137645483
+        X: -0.4279184639453888
+        Y: -0.6086322665214539
+        Z: 0.9626972079277039
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.2903975546360016
+      Pitch: -0.1446019858121872
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.5003733038902283
+      Yaw: 1.2053730487823486
     Saved: ~
 Window Geometry:
   Displays:
