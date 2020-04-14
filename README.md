@@ -18,12 +18,16 @@
 7. 而优化的自变量则是
    1. 车子相对于上一个位置的位移与转角
    2. 以卫星为基准，`up_link`相对于上一个位置的转角
-8. 假设`down_link`位于同一面上的两个相邻球铰之间的角度是`beta_down`，`up_link`位于同一面上的两个相邻球铰之间的角度是`beta_down`。`down_link`中球铰相对于底面的位移是`offset_down`，`up_link`中球铰相对于底面的位移是`offset_up`
+8. 假设`down_link`位于同一面上的两个相邻球铰之间的角度是`beta_down`，`up_link`位于同一面上的两个相邻球铰之间的角度是`beta_down`。`down_link`中球铰相对于底面的位移是`down_height`，`up_link`中球铰相对于底面的位移是`up_height`
 9. 假设车子相对于上一个位置移动的位移分别是`delta_x`，`delta_y`和`delta_theta`。
 10. `up_link`相对于上一个位置的转角是`delta_alpha`
+11. 由于`down_link`跟`car_link`是固连的，所以`down_link`和`up_link`之间的运动自由度只有沿着$x,y,z$轴的平动和绕$x,y$轴的转动（需要注意的是，这里的绕x,y轴的转动，都是相对于**当前坐标系**的转动因此需要**右乘**）
 
 # TIPS
 1. In RVIZ, `rviz/DisplayTypes/Axes` has three axises
    1. red - x 
    2. green - y 
    3. blue -z
+2. 齐次变换矩阵乘法
+   1. 运动是相对于**参考坐标系**而言的，**左乘**
+   2. 运动是相对于**当前坐标系**(运动坐标系)而言的，**右乘**
