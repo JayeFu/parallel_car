@@ -11,7 +11,7 @@ Panels:
         - /Axes1
         - /TF1
         - /TF1/Frames1
-      Splitter Ratio: 0.5
+      Splitter Ratio: 0.5794117450714111
     Tree Height: 544
   - Class: rviz/Selection
     Name: Selection
@@ -87,6 +87,71 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        down_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_1_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_2_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_3_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_4_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_5_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_6_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         littleX_link:
           Alpha: 1
           Show Axes: false
@@ -98,6 +163,71 @@ Visualization Manager:
           Show Trail: false
           Value: true
         littleZ_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_1_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_2_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_3_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_4_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_5_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_6_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -124,7 +254,7 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         barX_link:
           Value: true
         barY_link:
@@ -133,11 +263,63 @@ Visualization Manager:
           Value: true
         car_link:
           Value: true
+        down_1:
+          Value: true
+        down_1_medium:
+          Value: false
+        down_2:
+          Value: true
+        down_2_medium:
+          Value: false
+        down_3:
+          Value: true
+        down_3_medium:
+          Value: false
+        down_4:
+          Value: true
+        down_4_medium:
+          Value: false
+        down_5:
+          Value: true
+        down_5_medium:
+          Value: false
+        down_6:
+          Value: true
+        down_6_medium:
+          Value: false
+        down_link:
+          Value: true
         littleX_link:
           Value: true
         littleY_link:
           Value: true
         littleZ_link:
+          Value: true
+        up_1:
+          Value: true
+        up_1_medium:
+          Value: false
+        up_2:
+          Value: true
+        up_2_medium:
+          Value: false
+        up_3:
+          Value: true
+        up_3_medium:
+          Value: false
+        up_4:
+          Value: true
+        up_4_medium:
+          Value: false
+        up_5:
+          Value: true
+        up_5_medium:
+          Value: false
+        up_6:
+          Value: true
+        up_6_medium:
+          Value: false
+        up_link:
           Value: true
         wx_link:
           Value: true
@@ -156,6 +338,44 @@ Visualization Manager:
                     littleZ_link:
                       wx_link:
                         {}
+                    up_link:
+                      up_1_medium:
+                        up_1:
+                          {}
+                      up_2_medium:
+                        up_2:
+                          {}
+                      up_3_medium:
+                        up_3:
+                          {}
+                      up_4_medium:
+                        up_4:
+                          {}
+                      up_5_medium:
+                        up_5:
+                          {}
+                      up_6_medium:
+                        up_6:
+                          {}
+          down_link:
+            down_1_medium:
+              down_1:
+                {}
+            down_2_medium:
+              down_2:
+                {}
+            down_3_medium:
+              down_3:
+                {}
+            down_4_medium:
+              down_4:
+                {}
+            down_5_medium:
+              down_5:
+                {}
+            down_6_medium:
+              down_6:
+                {}
       Update Interval: 0
       Value: true
   Enabled: true

@@ -11,6 +11,16 @@
 3. 而`down_link`是`car_link`的`child`，通过`fixed joint`连接。
 4. 这样，在给定`wx_link`的位姿时，`up_link`会增加一个绕`litleZ_link`的旋转，这个转轴的旋转角度在优化的时候也需要有所考虑
 5. 接下来需要进行优化，优化的函数是并联机构长度的变化值，优化的自变量可以是卫星末端到车子的x、y轴距离和车子本身的转动角度。之所以这么选，是因为优化的目标即在于杆的长度不超限，所以就一并联机构长度的变化值来作为目标函数。
+6. 我现在在想优化的函数应该包含3项：
+   1. 杆的长度
+   2. 车子相对于上一个位置的位移与转角
+   3. 以卫星为基准，`up_link`相对于上一个位置的转角
+7. 而优化的自变量则是
+   1. 车子相对于上一个位置的位移与转角
+   2. 以卫星为基准，`up_link`相对于上一个位置的转角
+8. 假设`down_link`位于同一面上的两个相邻球铰之间的角度是`beta_down`，`up_link`位于同一面上的两个相邻球铰之间的角度是`beta_down`。`down_link`中球铰相对于底面的位移是`offset_down`，`up_link`中球铰相对于底面的位移是`offset_up`
+9. 假设车子相对于上一个位置移动的位移分别是`delta_x`，`delta_y`和`delta_theta`。
+10. `up_link`相对于上一个位置的转角是`delta_alpha`
 
 # TIPS
 1. In RVIZ, `rviz/DisplayTypes/Axes` has three axises

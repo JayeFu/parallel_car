@@ -5,6 +5,7 @@
     <xacro:include filename="$(find parallel_car)/urdf/parallel_car.gazebo.xacro"/>
     <xacro:include filename="$(find parallel_car)/urdf/parallel_car.transmission.xacro"/>
     <xacro:include filename="$(find parallel_car)/urdf/materials.xacro"/>
+    <xacro:include filename="$(find parallel_car)/urdf/sub_link.urdf.xacro"/>
     
     <!--xacro properties-->
     <xacro:property name="car_mass" value="20.0"/>
@@ -15,6 +16,11 @@
     <xacro:property name="bar_width" value="0.05"/>
     <xacro:property name="little_width" value="0.001"/>
     <xacro:property name="wx_length" value="0.55"/>
+    <xacro:property name="down_radius" value="0.2"/>
+    <xacro:property name="down_height" value="0.075"/>
+    <xacro:property name="up_radius" value="0.1"/>
+    <xacro:property name="up_height" value="0.05"/>
+    <xacro:property name="little_mass" value="0.01"/>
 
 
     <!-- links -->
@@ -259,6 +265,21 @@
         <parent link="littleY_link"/>
         <child link="up_link"/>
     </joint>
+
+    <!-- spawn the sub links and joints-->
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_1" height="${down_height}" radius="${down_radius}" beta="10.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_2" height="${down_height}" radius="${down_radius}" beta="110.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_3" height="${down_height}" radius="${down_radius}" beta="130.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_4" height="${down_height}" radius="${down_radius}" beta="230.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_5" height="${down_height}" radius="${down_radius}" beta="250.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_6" height="${down_height}" radius="${down_radius}" beta="350.0" little_width="${little_width}" little_mass="${little_mass}" />
+
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_1" height="${up_height}" radius="${up_radius}" beta="50.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_2" height="${up_height}" radius="${up_radius}" beta="70.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_3" height="${up_height}" radius="${up_radius}" beta="170.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_4" height="${up_height}" radius="${up_radius}" beta="190.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_5" height="${up_height}" radius="${up_radius}" beta="290.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_6" height="${up_height}" radius="${up_radius}" beta="310.0" little_width="${little_width}" little_mass="${little_mass}" />
 
 
 </robot>
