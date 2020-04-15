@@ -11,6 +11,6 @@ if __name__ == '__main__':
 
     while not rospy.is_shutdown():
         if para_ik.listen_to_tf():
-            para_ik.calculate_pole_length()
+            para_ik.calculate_pole_length_from_inherent()
             para_ik.print_pole_length()
         rate.sleep()
