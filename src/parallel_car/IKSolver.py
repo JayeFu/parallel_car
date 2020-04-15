@@ -80,6 +80,11 @@ class ParallelIKSolver:
         # a list for the length of pole_num poles
         self._pole_length_list = list()
 
+        # a list of transfromation from down_link to down_i (i from 1 to 6), fixed tf, no change afterwards
+        self._down_to_down_num_tf_list = list()
+        # a list of transfromation from up_link to up_i (i from 1 to 6), fixed tf, no change afterwards
+        self._up_to_up_num_tf_list = list()
+
     def listen_to_tf(self):
         """Use tf listener to get tf from up joint to down joint, i.e. origin is down joint
         
@@ -93,7 +98,7 @@ class ParallelIKSolver:
                 transform_stamped = self._tfBuffer.lookup_transform('down_'+str(idx+1), 'up_'+str(idx+1), rospy.Time())
                 self._transform_list.append(transform_stamped.transform)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rospy.logfatal("Transform lookup exception")
+            rospy.logfatal("Transform from down_i to up_i lookup exception")
             self._transform_list = old_transform_list
             return False
         return True
@@ -113,6 +118,27 @@ class ParallelIKSolver:
             length = math.sqrt(math.pow(x,2) + math.pow(y,2) + math.pow(z,2))
             self._pole_length_list.append(length)
 
+    def listen_to_up_down_fixed_tf(self):
+        try:
+            for idx in range(self._pole_num):
+                transform_stamped = self._tfBuffer.lookup_transform('down_link', 'down_'+str(idx+1), rospy.Time())
+                self._down_to_down_num_tf_list.append(transform_stamped.transform)
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rospy.logfatal("Transform from down_link to down_i lookup exception")
+            self._down_to_down_num_tf_list = list()
+            return False
+        
+        try:
+            for idx in range(self._pole_num):
+                transform_stamped = self._tfBuffer.lookup_transform('up_link', 'up_'+str(idx+1), rospy.Time())
+                self._up_to_up_num_tf_list.append(transform_stamped.transform)
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rospy.logfatal("Transform from up_link to up_i lookup exception")
+            self._up_to_up_num_tf_list = list()
+            return False
+
+        return True
+
     def calculate_pole_length_from_target(self, parallel_pose_desired):
         pole_length_list = list()
 
@@ -131,3 +157,9 @@ class ParallelIKSolver:
             [list] -- A list of double, each one indicates the length of a pole
         """
         return copy.copy(self._pole_length_list)
+
+    def quaternion_to_rotation_matrix(self, rot):
+        pass
+
+    def vector3_to_translation_matrix(self, trans):
+        pass
