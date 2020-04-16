@@ -84,11 +84,13 @@ class ParallelIKSolver:
 
         # a list of transfromation from down_link to down_i (i from 1 to 6), fixed tf, no change afterwards
         self._down_to_down_num_tf_list = list()
-        # a list of 
+        # a list of homogeneous transformation matrix from down_link to down_i
         self._T_down_to_down_num_list = list()
 
         # a list of transfromation from up_link to up_i (i from 1 to 6), fixed tf, no change afterwards
         self._up_to_up_num_tf_list = list()
+        # a list of homogeneous transformation matrix from up_link to up_i
+        self._T_up_to_up_num_list = list()
 
     def listen_to_tf(self):
         """Use tf listener to get tf from up joint to down joint, i.e. origin is down joint
@@ -99,7 +101,7 @@ class ParallelIKSolver:
         old_transform_list = self._transform_list
         try:
             self._transform_list = list()
-            for idx in range(0, self._pole_num):
+            for idx in range(self._pole_num):
                 transform_stamped = self._tfBuffer.lookup_transform('down_'+str(idx+1), 'up_'+str(idx+1), rospy.Time())
                 self._transform_list.append(transform_stamped.transform)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
@@ -112,11 +114,11 @@ class ParallelIKSolver:
         """ Read from self._transform_list, calculate length of poles and output to self._pole_length_list
         """
         vector3_list = list() # a list to contain the translation of tfs
-        for idx in range(0, self._pole_num):
+        for idx in range(self._pole_num):
             vector3_list.append(self._transform_list[idx].translation)
         
         self._pole_length_list = list()
-        for idx in range(0, self._pole_num):
+        for idx in range(self._pole_num):
             x = vector3_list[idx].x
             y = vector3_list[idx].y
             z = vector3_list[idx].z
@@ -124,6 +126,8 @@ class ParallelIKSolver:
             self._pole_length_list.append(length)
 
     def listen_to_up_down_fixed_tf(self):
+
+        # down
         try:
             for idx in range(self._pole_num):
                 transform_stamped = self._tfBuffer.lookup_transform('down_link', 'down_'+str(idx+1), rospy.Time())
@@ -133,6 +137,7 @@ class ParallelIKSolver:
             self._down_to_down_num_tf_list = list()
             return False
         
+        # up
         try:
             for idx in range(self._pole_num):
                 transform_stamped = self._tfBuffer.lookup_transform('up_link', 'up_'+str(idx+1), rospy.Time())
@@ -142,7 +147,41 @@ class ParallelIKSolver:
             self._up_to_up_num_tf_list = list()
             return False
 
+        #down
+        for idx in range(self._pole_num):
+            transform = self._down_to_down_num_tf_list[idx]
 
+            # CAUTION: since the transformation from listener is translated or rotated along the source link coordinate
+            # Thus, on right multiplication, first multiply translation matrix, then multiply rotation matrix
+
+            # get the translation matrix
+            vec3 = transform.translation # Vector3-type msg
+            trans_matrix = self.vector3_to_translation_matrix(vec3)
+
+            # ge the rotation matrix
+            quat = transform.rotation # Quaternion-type msg
+            rot_matrix = self.quaternion_to_rotation_matrix(quat)
+
+            com_matrix = trans_matrix*rot_matrix
+
+            self._T_down_to_down_num_list.append(com_matrix)
+
+        # up
+        for idx in range(self._pole_num):
+            transform = self._up_to_up_num_tf_list[idx]
+
+            vec3 = transform.translation
+            trans_matrix = self.vector3_to_translation_matrix(vec3)
+
+            quat = transform.rotation
+            rot_matrix = self.quaternion_to_rotation_matrix(quat)
+
+            com_matrix = trans_matrix*rot_matrix
+            
+            self._T_up_to_up_num_list.append(com_matrix)
+            
+            
+        
         return True
 
     def calculate_pole_length_from_target(self, parallel_pose_desired):
@@ -154,7 +193,7 @@ class ParallelIKSolver:
     def print_pole_length(self):
         """Print the length of every pole in the parallel mechanism, using loginfo
         """
-        for idx in range(0, self._pole_num):
+        for idx in range(self._pole_num):
             rospy.loginfo("pole {} is {} meter".format(idx+1, self._pole_length_list[idx]))
 
     def get_pole_length_list(self):
