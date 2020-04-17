@@ -199,7 +199,7 @@ class ParallelIKSolver:
         rospy.loginfo("T_o_to_wx is")
         print T_o_to_wx
 
-        T_down_trans = self.vector3_to_translation_matrix(Vector3(parallel_pose_desired.x, parallel_pose_desired.y, 0.18))
+        T_down_trans = self.vector3_to_translation_matrix(Vector3(parallel_pose_desired.x, parallel_pose_desired.y, 0.36))
         T_down_rot = Rotation('z', parallel_pose_desired.theta)
 
         # multply translation matrix first
