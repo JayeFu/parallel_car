@@ -4,8 +4,10 @@ import rospy
 
 import math
 import tf2_ros
-import geometry_msgs.msg
+from geometry_msgs.msg import Vector3
 import copy
+
+from parallel_car.TransRotGen import Rotation
 
 import numpy as np
 
@@ -179,15 +181,57 @@ class ParallelIKSolver:
             com_matrix = trans_matrix*rot_matrix
             
             self._T_up_to_up_num_list.append(com_matrix)
-            
-            
+                
         
         return True
 
-    def calculate_pole_length_from_target(self, parallel_pose_desired):
+    def calculate_pole_length_from_target(self, parallel_pose_desired, wx_pose): # parallel_pose_desired is ParellelPose, wx_pose is Pose-type msg
         pole_length_list = list()
 
+        # although Point-type msg can also be used, however, for clarity, first CONVERT to Vector3-type msg
+        T_wx_trans = self.vector3_to_translation_matrix(Vector3(wx_pose.position.x, wx_pose.position.y, wx_pose.position.z))
+        T_wx_rot = self.quaternion_to_rotation_matrix(wx_pose.orientation)
 
+        # multiply translation matrix first
+        T_o_to_wx = T_wx_trans*T_wx_rot
+
+        
+        rospy.loginfo("T_o_to_wx is")
+        print T_o_to_wx
+
+        T_down_trans = self.vector3_to_translation_matrix(Vector3(parallel_pose_desired.x, parallel_pose_desired.y, 0.18))
+        T_down_rot = Rotation('z', parallel_pose_desired.theta)
+
+        # multply translation matrix first
+        T_o_to_down = T_down_trans*T_down_rot
+
+        rospy.loginfo("T_o_to_down is")
+        print T_o_to_down
+
+        T_up_to_wx = Rotation('z', parallel_pose_desired.alpha)
+
+        rospy.loginfo("T_up_to_wx is")
+        print T_up_to_wx
+
+        T_down_to_up = T_o_to_down.I * T_o_to_wx * T_up_to_wx.I
+
+        rospy.loginfo("T_down_to_up is")
+        print T_down_to_up
+
+        rospy.loginfo("T_down_to_down_1 is ")
+        print self._T_down_to_down_num_list[0]
+
+        for idx in range(self._pole_num):
+            T_down_num_to_up_num = self._T_down_to_down_num_list[idx].I * T_down_to_up * self._T_up_to_up_num_list[idx]
+            x = T_down_num_to_up_num[0, 3]
+            y = T_down_num_to_up_num[1, 3]
+            z = T_down_num_to_up_num[2, 3]
+            pole_len = np.sqrt(np.square(x)+np.square(y)+np.square(z))
+            pole_length_list.append(pole_len)
+        
+        rospy.loginfo("pole length from target is coming!")
+        for idx in range(self._pole_num):
+            rospy.loginfo("pole {} is {} meter".format(idx+1, pole_length_list[idx]))
 
 
     def print_pole_length(self):
