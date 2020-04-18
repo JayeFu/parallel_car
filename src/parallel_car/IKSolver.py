@@ -7,7 +7,7 @@ import tf2_ros
 from geometry_msgs.msg import Vector3
 import copy
 
-from parallel_car.TransRotGen import Rotation
+from parallel_car.TransRotGen import Rotation, quaternion_to_rotation_matrix, vector3_to_translation_matrix
 
 import numpy as np
 
@@ -158,11 +158,11 @@ class ParallelIKSolver:
 
             # get the translation matrix
             vec3 = transform.translation # Vector3-type msg
-            trans_matrix = self.vector3_to_translation_matrix(vec3)
+            trans_matrix = vector3_to_translation_matrix(vec3)
 
             # ge the rotation matrix
             quat = transform.rotation # Quaternion-type msg
-            rot_matrix = self.quaternion_to_rotation_matrix(quat)
+            rot_matrix = quaternion_to_rotation_matrix(quat)
 
             com_matrix = trans_matrix*rot_matrix
 
@@ -173,10 +173,10 @@ class ParallelIKSolver:
             transform = self._up_to_up_num_tf_list[idx]
 
             vec3 = transform.translation
-            trans_matrix = self.vector3_to_translation_matrix(vec3)
+            trans_matrix = vector3_to_translation_matrix(vec3)
 
             quat = transform.rotation
-            rot_matrix = self.quaternion_to_rotation_matrix(quat)
+            rot_matrix = quaternion_to_rotation_matrix(quat)
 
             com_matrix = trans_matrix*rot_matrix
             
@@ -189,8 +189,8 @@ class ParallelIKSolver:
         pole_length_list = list()
 
         # although Point-type msg can also be used, however, for clarity, first CONVERT to Vector3-type msg
-        T_wx_trans = self.vector3_to_translation_matrix(Vector3(wx_pose.position.x, wx_pose.position.y, wx_pose.position.z))
-        T_wx_rot = self.quaternion_to_rotation_matrix(wx_pose.orientation)
+        T_wx_trans = vector3_to_translation_matrix(Vector3(wx_pose.position.x, wx_pose.position.y, wx_pose.position.z))
+        T_wx_rot = quaternion_to_rotation_matrix(wx_pose.orientation)
 
         # multiply translation matrix first
         T_o_to_wx = T_wx_trans*T_wx_rot
@@ -199,7 +199,7 @@ class ParallelIKSolver:
         rospy.loginfo("T_o_to_wx is")
         print T_o_to_wx
 
-        T_down_trans = self.vector3_to_translation_matrix(Vector3(parallel_pose_desired.x, parallel_pose_desired.y, 0.36))
+        T_down_trans = vector3_to_translation_matrix(Vector3(parallel_pose_desired.x, parallel_pose_desired.y, 0.18))
         T_down_rot = Rotation('z', parallel_pose_desired.theta)
 
         # multply translation matrix first
@@ -247,55 +247,3 @@ class ParallelIKSolver:
             [list] -- A list of double, each one indicates the length of a pole
         """
         return copy.copy(self._pole_length_list)
-
-    def quaternion_to_rotation_matrix(self, quat):
-        """A function to transform quaternion to homogeneous rotation matrix
-        
-        Arguments:
-            rot {Quaternion} -- Quaternion-type msg
-        
-        Returns:
-            Numpy matrix in 4x4  -- Result homogeneous rotation matrix from input quaternion
-        """
-        # get qx, qy, qz and qw from Quaternion-type msg
-        qx = quat.x
-        qy = quat.y
-        qz = quat.z
-        qw = quat.w
-
-        rot_matrix = np.mat(np.eye(4))
-
-        rot_matrix[0, 0] = 1-2*np.square(qy)-2*np.square(qz)
-        rot_matrix[0, 1] = 2*qx*qy-2*qz*qw
-        rot_matrix[0, 2] = 2*qx*qz+2*qy*qw
-        rot_matrix[1, 0] = 2*qx*qy+2*qz*qw
-        rot_matrix[1, 1] = 1-2*np.square(qx)-2*np.square(qz)
-        rot_matrix[1, 2] = 2*qy*qz-2*qx*qw
-        rot_matrix[2, 0] = 2*qx*qz-2*qy*qw
-        rot_matrix[2, 1] = 2*qy*qz+2*qx*qw
-        rot_matrix[2, 2] = 1-2*np.square(qx)-2*np.square(qy)
-        
-        return rot_matrix
-
-
-    def vector3_to_translation_matrix(self, vec3):
-        """A function to transfrom from Vector3-type msg to homogeneous translation matrix
-        
-        Arguments:
-            vec3 {Vector3} -- Vector3-type msg
-        
-        Returns:
-            Numpy matrix in 4x4  -- Result homogeneous translation matrix from input vector3
-        """
-        
-        # get x, y and z from Vector3-type msg
-        x = vec3.x
-        y = vec3.y
-        z = vec3.z
-
-        trans_matrix = np.mat(np.eye(4))
-        trans_matrix[0, 3] = x
-        trans_matrix[1, 3] = y
-        trans_matrix[2, 3] = z
-
-        return trans_matrix
