@@ -4,6 +4,8 @@ import rospy
 
 import numpy as np
 
+import math
+
 
 
 def Rotation(axis, angle, in_degree=False):
@@ -152,6 +154,24 @@ def Trans_Z(dist):
 
     return T_trans_Z
 
+def transform_to_matrix(vec3, quat):
+    """A function to get homogeneous matrix from transform
+    
+    Arguments:
+        vec3 {Vector3} -- Vector3-type msg from given transform
+        quat {Quaternion} -- Quaternion-type msg from given transform
+    
+    Returns:
+        Numpy matrix in 4x4 -- 4x4 homogeneous matrix representing given transfrom
+    """
+    trans_matrix = vector3_to_translation_matrix(vec3)
+    rot_matrix = quaternion_to_rotation_matrix(quat)
+
+    # because of the transformation from tf, multiply trans_matrix first
+    com_matrix = trans_matrix*rot_matrix
+    
+    return com_matrix
+
 
 def quaternion_to_rotation_matrix(quat):
     """A function to transform quaternion to homogeneous rotation matrix
@@ -204,3 +224,17 @@ def vector3_to_translation_matrix(vec3):
     trans_matrix[2, 3] = z
 
     return trans_matrix
+
+def quaternion_to_euler(quat):
+    (x, y, z, w) = (quat.x, quat.y, quat.z, quat.w)
+    t0 = +2.0 * (w * x + y * z)
+    t1 = +1.0 - 2.0 * (x * x + y * y)
+    roll = math.atan2(t0, t1)
+    t2 = +2.0 * (w * y - z * x)
+    t2 = +1.0 if t2 > +1.0 else t2
+    t2 = -1.0 if t2 < -1.0 else t2
+    pitch = math.asin(t2)
+    t3 = +2.0 * (w * z + x * y)
+    t4 = +1.0 - 2.0 * (y * y + z * z)
+    yaw = math.atan2(t3, t4)
+    return [yaw, pitch, roll]

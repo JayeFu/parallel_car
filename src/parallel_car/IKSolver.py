@@ -59,6 +59,10 @@ class ParallelPose:
             rospy.logfatal("The instance after '+' is not PrallelPose object. Returning all zero PrallelPose!")
             return add_result
 
+    def __str__(self):
+        resStr = "at ({}, {}), theta={}, alpha={}".format(self.x, self.y, self.theta, self.alpha)
+        return resStr
+
 
 class ParallelIKSolver:
     """A parallel mechanism IK solver class for listening to tf msgs and calculating length of poles
@@ -196,8 +200,8 @@ class ParallelIKSolver:
         T_o_to_wx = T_wx_trans*T_wx_rot
 
         
-        rospy.loginfo("T_o_to_wx is")
-        print T_o_to_wx
+        # rospy.loginfo("T_o_to_wx is")
+        # print T_o_to_wx
 
         T_down_trans = vector3_to_translation_matrix(Vector3(parallel_pose_desired.x, parallel_pose_desired.y, 0.18))
         T_down_rot = Rotation('z', parallel_pose_desired.theta)
@@ -205,21 +209,21 @@ class ParallelIKSolver:
         # multply translation matrix first
         T_o_to_down = T_down_trans*T_down_rot
 
-        rospy.loginfo("T_o_to_down is")
-        print T_o_to_down
+        # rospy.loginfo("T_o_to_down is")
+        # print T_o_to_down
 
         T_up_to_wx = Rotation('z', parallel_pose_desired.alpha)
 
-        rospy.loginfo("T_up_to_wx is")
-        print T_up_to_wx
+        # rospy.loginfo("T_up_to_wx is")
+        # print T_up_to_wx
 
         T_down_to_up = T_o_to_down.I * T_o_to_wx * T_up_to_wx.I
 
-        rospy.loginfo("T_down_to_up is")
-        print T_down_to_up
+        # rospy.loginfo("T_down_to_up is")
+        # print T_down_to_up
 
-        rospy.loginfo("T_down_to_down_1 is ")
-        print self._T_down_to_down_num_list[0]
+        # rospy.loginfo("T_down_to_down_1 is ")
+        # print self._T_down_to_down_num_list[0]
 
         for idx in range(self._pole_num):
             T_down_num_to_up_num = self._T_down_to_down_num_list[idx].I * T_down_to_up * self._T_up_to_up_num_list[idx]
@@ -231,14 +235,15 @@ class ParallelIKSolver:
         
         rospy.loginfo("pole length from target is coming!")
         for idx in range(self._pole_num):
-            rospy.loginfo("pole {} is {} meter".format(idx+1, pole_length_list[idx]))
+            print "pole {} is {} meter".format(idx+1, pole_length_list[idx])
 
 
     def print_pole_length(self):
-        """Print the length of every pole in the parallel mechanism, using loginfo
+        """Print the length of every pole in the parallel mechanism
         """
+        rospy.loginfo("pole length from inherent!")
         for idx in range(self._pole_num):
-            rospy.loginfo("pole {} is {} meter".format(idx+1, self._pole_length_list[idx]))
+            print "pole {} is {} meter".format(idx+1, self._pole_length_list[idx])
 
     def get_pole_length_list(self):
         """Return a copy version of self._pole_length_list
@@ -247,3 +252,11 @@ class ParallelIKSolver:
             [list] -- A list of double, each one indicates the length of a pole
         """
         return copy.copy(self._pole_length_list)
+
+    def get_transform(self, source_link, target_link):
+        try:
+            transform_stamped = self._tfBuffer.lookup_transform(source_link, target_link, rospy.Time())
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rospy.logfatal("Transform from {} to {} lookup exception".format(source_link, target_link))
+            return (False, None)
+        return (True, transform_stamped.transform)
