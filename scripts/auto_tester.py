@@ -6,16 +6,21 @@ from parallel_car.TransRotGen import quaternion_to_rotation_matrix, vector3_to_t
 from geometry_msgs.msg import Pose, Point
 from time import sleep
 
+RUN_ENV = 'gazebo'
+
 if __name__ == "__main__":
     rospy.init_node("auto_tester")
 
-    para_ik = ParallelIKSolver()
+    para_ik = ParallelIKSolver(run_env=RUN_ENV)
 
     rate = rospy.Rate(1.0)
 
     listened_to_fixed = False
 
-    origin = "car_link"
+    if RUN_ENV == 'rviz':
+        origin = 'car_link'
+    else: # RUN_ENV == 'gazebo'
+        origin = 'odom'
 
     while not rospy.is_shutdown():
         if not listened_to_fixed: # have not listned to fixed tf

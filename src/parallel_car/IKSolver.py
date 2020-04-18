@@ -11,6 +11,8 @@ from parallel_car.TransRotGen import Rotation, quaternion_to_rotation_matrix, ve
 
 import numpy as np
 
+CAR_HEIGHT = 0.36
+
 class ParallelPose:
     """A class to contain the pose of the parallel car, given the pose of wx_link
     """
@@ -68,7 +70,7 @@ class ParallelIKSolver:
     """A parallel mechanism IK solver class for listening to tf msgs and calculating length of poles
 
     """
-    def __init__(self, pole_num=6):
+    def __init__(self, pole_num=6, run_env="rviz"):
         """Constructor for ParallelIKSolver
         
         Keyword Arguments:
@@ -97,6 +99,11 @@ class ParallelIKSolver:
         self._up_to_up_num_tf_list = list()
         # a list of homogeneous transformation matrix from up_link to up_i
         self._T_up_to_up_num_list = list()
+
+        if run_env=='rviz':
+            self._o_to_down_height = CAR_HEIGHT/2.0
+        else: # run_env== 'gazebo'
+            self._o_to_down_height = CAR_HEIGHT
 
     def listen_to_tf(self):
         """Use tf listener to get tf from up joint to down joint, i.e. origin is down joint
@@ -203,7 +210,7 @@ class ParallelIKSolver:
         # rospy.loginfo("T_o_to_wx is")
         # print T_o_to_wx
 
-        T_down_trans = vector3_to_translation_matrix(Vector3(parallel_pose_desired.x, parallel_pose_desired.y, 0.18))
+        T_down_trans = vector3_to_translation_matrix(Vector3(parallel_pose_desired.x, parallel_pose_desired.y, self._o_to_down_height))
         T_down_rot = Rotation('z', parallel_pose_desired.theta)
 
         # multply translation matrix first
