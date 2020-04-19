@@ -7,11 +7,12 @@ import tf2_ros
 from geometry_msgs.msg import Vector3
 import copy
 
-from parallel_car.TransRotGen import Rotation, quaternion_to_rotation_matrix, vector3_to_translation_matrix
+from parallel_car.TransRotGen import Rotation, Translation, quaternion_to_rotation_matrix, vector3_to_translation_matrix
 
 import numpy as np
 
 CAR_HEIGHT = 0.36
+ADDON_LENGTH = 0.5
 
 class ParallelPose:
     """A class to contain the pose of the parallel car, given the pose of wx_link
@@ -219,7 +220,7 @@ class ParallelIKSolver:
         # rospy.loginfo("T_o_to_down is")
         # print T_o_to_down
 
-        T_up_to_wx = Rotation('z', parallel_pose_desired.alpha)
+        T_up_to_wx = Translation('z', ADDON_LENGTH) * Rotation('y', np.pi/4.0) * Translation('z', ADDON_LENGTH) * Rotation('z', parallel_pose_desired.alpha)
 
         # rospy.loginfo("T_up_to_wx is")
         # print T_up_to_wx
