@@ -67,3 +67,8 @@ T_up_to_wx = Rotation('z', alpha)
    1. 运动是相对于**参考坐标系**而言的，**左乘**
    2. 运动是相对于**当前坐标系**(运动坐标系)而言的，**右乘**
 3. 当在Gazebo和Rviz之间进行切换的时候，请不要忘记修改IKSolver中的0.18或0.36
+
+# 模型修改意见
+1. 把`up_link`移动到`littleZ_link`的child上
+2. 在`littleZ_link`上放置一根竖直的link，然后在这个link上加上一根斜着的link，绕y轴旋转45度
+3. 在斜着的link上放置`wx_link`,中间加绕着$z$轴转的关节

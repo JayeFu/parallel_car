@@ -21,6 +21,8 @@
     <xacro:property name="up_radius" value="0.1"/>
     <xacro:property name="up_height" value="0.05"/>
     <xacro:property name="little_mass" value="0.01"/>
+    <xacro:property name="addon_length" value="0.5"/>
+    <xacro:property name="addon_width" value="0.05"/>
 
 
     <!-- links -->
@@ -196,6 +198,38 @@
         </collision>
     </link>
 
+    <!-- addon links for support of wx_link -->
+
+    <link name="addon_Vertical_link">
+        <inertial>
+            <origin xyz="0.0 0.0 ${addon_length/2.0}" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 ${addon_length/2.0}" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${addon_width} ${addon_width} ${addon_length}"/>
+            </geometry>
+            <material name="purple"/>
+        </visual>
+    </link>
+
+    <link name="addon_Tilt_link">
+        <inertial>
+            <origin xyz="0.0 0.0 ${addon_length/2.0}" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 ${addon_length/2.0}" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${addon_width} ${addon_width} ${addon_length}"/>
+            </geometry>
+            <material name="purple"/>
+        </visual>
+    </link>
+
     <!-- joints -->
 
     <joint name="car_to_barX" type="prismatic">
@@ -246,10 +280,12 @@
         <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="5.0" velocity="0.5"/>
     </joint>
 
-    <joint name="littleZ_to_wx" type="fixed">
-        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        <parent link="littleZ_link"/>
+    <joint name="addon_Tilt_to_wx" type="continuous">
+        <origin xyz="0.0 0.0 ${addon_length}" rpy="0.0 0.0 0.0"/>
+        <parent link="addon_Tilt_link"/>
         <child link="wx_link"/>
+        <axis xyz="0.0 0.0 1.0"/>
+        <limit effort="5.0" velocity="0.5"/>
     </joint>
 
     <!-- up and down joints -->
@@ -260,9 +296,9 @@
         <child link="down_link"/>
     </joint>
 
-    <joint name="littleY_to_up" type="fixed">
+    <joint name="littleZ_to_up" type="fixed">
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        <parent link="littleY_link"/>
+        <parent link="littleZ_link"/>
         <child link="up_link"/>
     </joint>
 
@@ -281,5 +317,17 @@
     <xacro:sub_link_joint parent_link="up_link" child_link="up_5" height="${up_height}" radius="${up_radius}" beta="290.0" little_width="${little_width}" little_mass="${little_mass}" />
     <xacro:sub_link_joint parent_link="up_link" child_link="up_6" height="${up_height}" radius="${up_radius}" beta="310.0" little_width="${little_width}" little_mass="${little_mass}" />
 
+    <!--addon joints-->
+    <joint name="littleZ_to_addon_Vertical" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="littleZ_link"/>
+        <child link="addon_Vertical_link"/>
+    </joint>
+
+    <joint name="addon_Vertical_to_addon_Tilt" type="fixed">
+        <origin xyz="0.0 0.0 ${addon_length}" rpy="0.0 ${PI/4.0} 0.0"/>
+        <parent link="addon_Vertical_link"/>
+        <child link="addon_Tilt_link"/>
+    </joint>
 
 </robot>

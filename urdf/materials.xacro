@@ -41,4 +41,8 @@
     <color rgba="${210/255} ${105/255} ${30/255} 1.0"/>
   </material>
 
+  <material name="purple">
+    <color rgba="${128/255} 0.0 ${128/255} 1.0"/>
+  </material>
+
 </robot>
