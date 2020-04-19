@@ -1,17 +1,21 @@
 #!/usr/bin/env python  
 
 import rospy
+from parallel_car.Optimizer import GradientOptimizer
 from parallel_car.IKSolver import ParallelPose ,ParallelIKSolver
 from parallel_car.TransRotGen import quaternion_to_rotation_matrix, vector3_to_translation_matrix, transform_to_matrix, quaternion_to_euler
 from geometry_msgs.msg import Pose, Point
 from time import sleep
 
-RUN_ENV = 'gazebo'
+# either 'rviz' or 'gazebo'
+RUN_ENV = 'rviz'
 
 if __name__ == "__main__":
     rospy.init_node("auto_tester")
 
     para_ik = ParallelIKSolver(run_env=RUN_ENV)
+
+    optimizer = GradientOptimizer()
 
     rate = rospy.Rate(1.0)
 
@@ -27,7 +31,7 @@ if __name__ == "__main__":
             if para_ik.listen_to_up_down_fixed_tf():
                 listened_to_fixed = True
             else:
-                rospy.loginfo("listening to fixed tf failed")
+                rospy.logfatal("listening to fixed tf failed")
         else: # listned_to_fixed is True
             # listen to tf from down_num to up_num
             listen_to_tf_succ = para_ik.listen_to_tf()
@@ -36,7 +40,7 @@ if __name__ == "__main__":
                 # calculate the num from listened tf, this should be 100 percent correct
                 para_ik.calculate_pole_length_from_inherent()
             else:
-                rospy.loginfo("listening to down_i-up_i transform failed.")
+                rospy.logfatal("listening to down_i-up_i transform failed.")
                 
             parallel_pose_desired = ParallelPose()
 
@@ -47,14 +51,14 @@ if __name__ == "__main__":
                 parallel_pose_desired.y = o_to_down_tf.translation.y
                 parallel_pose_desired.theta = quaternion_to_euler(o_to_down_tf.rotation)[0]
             else:
-                rospy.loginfo("listening to {}-down_link transform failed.".format(origin))
+                rospy.logfatal("listening to {}-down_link transform failed.".format(origin))
 
             # get transform from up_link to wx_link
             (up_to_wx_succ, up_to_wx_tf) = para_ik.get_transform("up_link", "wx_link")
             if up_to_wx_succ:
                 parallel_pose_desired.alpha = quaternion_to_euler(up_to_wx_tf.rotation)[0]
             else:
-                rospy.loginfo("listening to up_link-wx_link transform failed.")
+                rospy.logfatal("listening to up_link-wx_link transform failed.")
             
             # get transform from origin to wx_link
             (o_to_wx_succ, o_to_wx_tf) = para_ik.get_transform(origin, "wx_link")
@@ -68,6 +72,8 @@ if __name__ == "__main__":
             if listen_to_tf_succ and o_to_down_succ and up_to_wx_succ and o_to_wx_succ:
                 para_ik.print_pole_length()
                 para_ik.calculate_pole_length_from_target(parallel_pose_desired, wx_pose)
+                cost = optimizer.compute_cost(ParallelPose(), para_ik.get_pole_length_list())
+                rospy.loginfo("Current cost is {}".format(cost))
             
         rate.sleep()
             

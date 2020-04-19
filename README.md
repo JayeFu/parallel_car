@@ -3,7 +3,7 @@
 # 当前任务
 - [x] 创建一个类，这个类要有一个`subscriber`来收取`/tf`这个topic上面的信息，然后存入私有变量，之后它有一个成员函数定时从私有变量中解算杆的长度，那么，在这个类中就先需要完成解算杆长度的任务。
 - [ ] 装好了solidworks之后看一下stewart机构平台中心到球铰的角度
-- [ ] 需要写一个auto tester来检测计算的正确性，应该在这里利用listener来读`odom`到`down_link`的变换和`odom`到`wx_link`的变换，然后输入`parallel_pose_desired`和`wx_pose`
+- [x] 需要写一个auto tester来检测计算的正确性，应该在这里利用listener来读`odom`到`down_link`的变换和`odom`到`wx_link`的变换，然后输入`parallel_pose_desired`和`wx_pose`
 
 # 思路
 
@@ -23,6 +23,40 @@
 9. 假设车子相对于上一个位置移动的位移分别是`delta_x`，`delta_y`和`delta_theta`。
 10. `up_link`相对于上一个位置的转角是`delta_alpha`
 11. 由于`down_link`跟`car_link`是固连的，所以`down_link`和`up_link`之间的运动自由度只有沿着$x,y,z$轴的平动和绕$x,y$轴的转动（需要注意的是，这里的绕x,y轴的转动，都是相对于**当前坐标系**的转动因此需要**右乘**）
+
+# 推导过程
+以下是推导计算`down_1`到`up_1`之间变换的过程。计算杆1的长度只需要获得`down_1`到`up_1`的平动位移，然后利用$l=\sqrt{x^2+y^2+z^2}$即可计算杆的长度了
+1. 从`down_1`变换到`up_1`
+$$
+T_{down}^{down\_1}T_{down\_1}^{up\_1}=T_{down}^{up}T_{up}^{up\_1}\\
+\Rightarrow T_{down\_1}^{up\_1}=(T_{down}^{down\_1})^{-1}T_{down}^{up}T_{up}^{up\_1}\tag{1}
+$$
+
+2. 从`origin`变换到`wx`
+$$
+T_o^{wx}=T_o^{down}T_{down}^{up}T_{up}^{wx}\\
+\Rightarrow T_{down}^{up}=(T_o^{down})^{-1}T_o^{wx}(T_{up}^{wx})^{-1}\tag{2}
+$$
+
+3. 将式$(2)$带入式$(1)$中可以得到
+$$
+T_{down\_1}^{up\_1}=(T_{down}^{down\_1})^{-1}(T_o^{down})^{-1}T_o^{wx}(T_{up}^{wx})^{-1}T_{up}^{up\_1}\tag{3}
+$$
+
+计算如下
+1. 在式$(3)$中，$T_{down}^{down\_1}$和$T_{up}^{up\_1}$是固定的
+   1. $T_{down}^{down\_1}$的产生方式是先绕$z$轴进行旋转一个角度，然后沿$x$轴行进一段距离，沿$z$轴行进一段距离
+2. $T_o^{down}$可以通过`ParallelPose`中的`x,y,theta`来确定。变换方式如下
+
+```Python
+T_o_to_down=Translation('x', x)*Translation('y', y)*Translation('z', CAR_HEIGHT)*Rotation('z', theta)
+```
+3. $T_o^{wx}$在一次计算中也是给定的，不会发生改变
+4. $T_{up}^{wx}$可以通过`ParallelPose`中的`alpha`来确定，变换方式如下
+
+```Python
+T_up_to_wx = Rotation('z', alpha)
+```
 
 # TIPS
 1. In RVIZ, `rviz/DisplayTypes/Axes` has three axises
