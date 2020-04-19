@@ -13,11 +13,17 @@ parallel_car:
         - barZ_to_littleX
         - littleX_to_littleY
         - littleY_to_littleZ
+        - addon_Tilt_to_wx
       constraints:
-          goal_time: 0.6
-          stopped_velocity_tolerance: 0.01
-          joint1: {trajectory: 0.01, goal: 0.01}
-          joint2: {trajectory: 0.01, goal: 0.01}
+        goal_time: 0.6
+        stopped_velocity_tolerance: 0.01
+        car_to_barX: {trajectory: 0.01, goal: 0.01}
+        barX_to_barY: {trajectory: 0.01, goal: 0.01}
+        barY_to_barZ: {trajectory: 0.01, goal: 0.01}
+        barZ_to_littleX: {trajectory: 0.01, goal: 0.01}
+        littleX_to_littleY: {trajectory: 0.01, goal: 0.01}
+        littleY_to_littleZ: {trajectory: 0.01, goal: 0.01}
+        addon_Tilt_to_wx: {trajectory: 0.01, goal: 0.01}
       stop_trajectory_duration: 0.0
       state_publish_rate:  50
       action_monitor_rate: 20

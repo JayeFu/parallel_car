@@ -61,4 +61,14 @@
         </actuator>
     </transmission>
 
+    <transmission name="addon_Tilt_to_wx_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="addon_Tilt_to_wx">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="addon_Tilt_to_wx_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
 </robot>
