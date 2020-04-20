@@ -72,7 +72,7 @@ if __name__ == "__main__":
             if listen_to_tf_succ and o_to_down_succ and up_to_wx_succ and o_to_wx_succ:
                 para_ik.print_pole_length()
                 para_ik.calculate_pole_length_from_target(parallel_pose_desired, wx_pose)
-                cost = optimizer.compute_cost(ParallelPose(), para_ik.get_pole_length_list())
+                cost = optimizer.compute_cost(ParallelPose(), para_ik.get_pole_length_list(), para_ik.get_pole_length_list())
                 rospy.loginfo("Current cost is {}".format(cost))
             
         rate.sleep()

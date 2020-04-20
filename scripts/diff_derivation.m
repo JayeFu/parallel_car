@@ -88,10 +88,11 @@ T_o_to_wx = [w11, w12, w13, w_x;
     0, 0, 0, 1];
 
 % symbolic variables of the pose of wx with respect to up_link
-syms w_a
+syms w_a a_l
 % w_a: wx_alpha
+% a_l: addon_length
 
-T_up_to_wx = Rot_Z(w_a);
+T_up_to_wx = Trans_Z(a_l) * Rot_Y(pi/4) * Trans_Z(a_l) * Rot_Z(w_a);
 
 % get the inverse of T_up_to_wx
 inv_T_up_to_wx = [cos(w_a), sin(w_a), 0, 0;

@@ -4,6 +4,7 @@
 - [x] 创建一个类，这个类要有一个`subscriber`来收取`/tf`这个topic上面的信息，然后存入私有变量，之后它有一个成员函数定时从私有变量中解算杆的长度，那么，在这个类中就先需要完成解算杆长度的任务。
 - [ ] 装好了solidworks之后看一下stewart机构平台中心到球铰的角度
 - [x] 需要写一个auto tester来检测计算的正确性，应该在这里利用listener来读`odom`到`down_link`的变换和`odom`到`wx_link`的变换，然后输入`parallel_pose_desired`和`wx_pose`
+- [x] 更改`diff_derivation.m`中的`T_up_to_wx`
 
 # 思路
 
