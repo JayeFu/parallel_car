@@ -197,8 +197,21 @@ class ParallelIKSolver:
         
         return True
 
-    def calculate_pole_length_from_target(self, parallel_pose_desired, wx_pose): # parallel_pose_desired is ParellelPose, wx_pose is Pose-type msg
+    def calculate_pole_length_from_target(self, parallel_pose_desired, wx_pose): 
+        """A function to compute the pole length from given target
+        
+        Arguments:
+            parallel_pose_desired {ParallelPose} -- the desired parallel pose of the car and mechanism
+            wx_pose {Pose} -- a Pose-type msg containing the msg of the 
+
+        Return:
+            [tuple] -- a tuple, first item is the list of pole length, second item is the transformations from down_num to up_num
+        """
+        # a list of pole_length computed from target
         pole_length_list = list()
+
+        # a list of transformations from down_num to up_num
+        T_down_num_to_up_num_list = list()
 
         # although Point-type msg can also be used, however, for clarity, first CONVERT to Vector3-type msg
         T_wx_trans = vector3_to_translation_matrix(Vector3(wx_pose.position.x, wx_pose.position.y, wx_pose.position.z))
@@ -240,10 +253,13 @@ class ParallelIKSolver:
             z = T_down_num_to_up_num[2, 3]
             pole_len = np.sqrt(np.square(x)+np.square(y)+np.square(z))
             pole_length_list.append(pole_len)
+            T_down_num_to_up_num_list.append(T_down_num_to_up_num)
         
         rospy.loginfo("pole length from target is coming!")
         for idx in range(self._pole_num):
             print "pole {} is {} meter".format(idx+1, pole_length_list[idx])
+        
+        return (pole_length_list, T_down_num_to_up_num_list)
 
 
     def print_pole_length(self):

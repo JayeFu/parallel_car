@@ -37,15 +37,15 @@ class GradientOptimizer:
         Returns:
             [double] -- the total cost for the desired incremental pose of the parallel_car
         """
-        d_x = parallel_increment.x
-        d_y = parallel_increment.y
-        d_theta = parallel_increment.theta
-        d_alpha = parallel_increment.alpha
+        delta_x = parallel_increment.x
+        delta_y = parallel_increment.y
+        delta_theta = parallel_increment.theta
+        delta_alpha = parallel_increment.alpha
 
-        car_cost = np.square(d_x)+np.square(d_y)+np.square(d_theta)
+        car_cost = np.square(delta_x)+np.square(delta_y)+np.square(delta_theta)
         car_cost *= self._car_weight
 
-        wx_cost = np.square(d_alpha)
+        wx_cost = np.square(delta_alpha)
         wx_cost *= self._wx_weight
 
         pole_cost = 0.0

@@ -21,6 +21,8 @@ if __name__ == "__main__":
 
     listened_to_fixed = False
 
+    first_time_listen = True
+
     if RUN_ENV == 'rviz':
         origin = 'car_link'
     else: # RUN_ENV == 'gazebo'
@@ -70,9 +72,12 @@ if __name__ == "__main__":
                 wx_pose.orientation = o_to_wx_tf.rotation
             
             if listen_to_tf_succ and o_to_down_succ and up_to_wx_succ and o_to_wx_succ:
+                if first_time_listen:
+                    original_pole_length_list = para_ik.get_pole_length_list()
+                    first_time_listen = False
                 para_ik.print_pole_length()
-                para_ik.calculate_pole_length_from_target(parallel_pose_desired, wx_pose)
-                cost = optimizer.compute_cost(ParallelPose(), para_ik.get_pole_length_list(), para_ik.get_pole_length_list())
+                (pole_length_list_from_target, T_down_num_to_up_num_from_target_list) = para_ik.calculate_pole_length_from_target(parallel_pose_desired, wx_pose)
+                cost = optimizer.compute_cost(ParallelPose(), para_ik.get_pole_length_list(), original_pole_length_list)
                 rospy.loginfo("Current cost is {}".format(cost))
             
         rate.sleep()
