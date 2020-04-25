@@ -31,7 +31,7 @@ def Rotation(axis, angle, in_degree=False):
         else: # axis == 'z'
             return Rot_Z(angle)
     else:
-        rospy.logfatal('Axis wrong! Return identity matrix')
+        rospy.logerr('Axis wrong! Return identity matrix')
         return np.mat(np.eye(4,4))
 
 def Rot_X(alpha):
@@ -106,7 +106,7 @@ def Translation(axis, distance):
         else: # axis == 'z'
             return Trans_Z(distance)
     else:
-        rospy.logfatal('Axis wrong! Return identity matrix')
+        rospy.logerr('Axis wrong! Return identity matrix')
         return np.mat(np.eye(4,4))
 
 def Trans_X(dist):

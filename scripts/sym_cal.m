@@ -15,4 +15,6 @@ rot_Z = [cos(gama), -sin(gama), 0, 0;
     0, 0, 1, 0;
     0, 0, 0, 1];
 
-rot_X_Y = rot_X*rot_Y;
+rot_X_Y = rot_X * rot_Y;
+
+rot_X_Y_Z = rot_X * rot_Y * rot_Z;

@@ -12,6 +12,7 @@ from parallel_car.TransRotGen import Rotation, Translation, quaternion_to_rotati
 import numpy as np
 
 CAR_HEIGHT = 0.36
+BAR_LENGTH = 1.0
 ADDON_LENGTH = 0.5
 
 class ParallelPose:
@@ -48,7 +49,7 @@ class ParallelPose:
             parallel_increment.alpha = self.alpha - other.alpha
             return parallel_increment
         else:
-            rospy.logfatal("The instance after '-' is not PrallelPose object. Returning all zero PrallelPose!")
+            rospy.logerr("The instance after '-' is not PrallelPose object. Returning all zero PrallelPose!")
             return parallel_increment
 
     def __add__(self, other):
@@ -59,7 +60,7 @@ class ParallelPose:
             add_result.theta = self.theta + other.theta
             add_result.alpha = self.alpha + other.alpha
         else:
-            rospy.logfatal("The instance after '+' is not PrallelPose object. Returning all zero PrallelPose!")
+            rospy.logerr("The instance after '+' is not PrallelPose object. Returning all zero PrallelPose!")
             return add_result
 
     def __str__(self):
@@ -119,7 +120,7 @@ class ParallelIKSolver:
                 transform_stamped = self._tfBuffer.lookup_transform('down_'+str(idx+1), 'up_'+str(idx+1), rospy.Time())
                 self._transform_list.append(transform_stamped.transform)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rospy.logfatal("Transform from down_i to up_i lookup exception")
+            rospy.logerr("Transform from down_i to up_i lookup exception")
             self._transform_list = old_transform_list
             return False
         return True
@@ -147,7 +148,7 @@ class ParallelIKSolver:
                 transform_stamped = self._tfBuffer.lookup_transform('down_link', 'down_'+str(idx+1), rospy.Time())
                 self._down_to_down_num_tf_list.append(transform_stamped.transform)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rospy.logfatal("Transform from down_link to down_i lookup exception")
+            rospy.logerr("Transform from down_link to down_i lookup exception")
             self._down_to_down_num_tf_list = list()
             return False
         
@@ -157,7 +158,7 @@ class ParallelIKSolver:
                 transform_stamped = self._tfBuffer.lookup_transform('up_link', 'up_'+str(idx+1), rospy.Time())
                 self._up_to_up_num_tf_list.append(transform_stamped.transform)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rospy.logfatal("Transform from up_link to up_i lookup exception")
+            rospy.logerr("Transform from up_link to up_i lookup exception")
             self._up_to_up_num_tf_list = list()
             return False
 
@@ -281,6 +282,50 @@ class ParallelIKSolver:
         try:
             transform_stamped = self._tfBuffer.lookup_transform(source_link, target_link, rospy.Time())
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rospy.logfatal("Transform from {} to {} lookup exception".format(source_link, target_link))
+            rospy.logerr("Transform from {} to {} lookup exception".format(source_link, target_link))
             return (False, None)
         return (True, transform_stamped.transform)
+
+class SerialIKSolver:
+    """Given transform form down_link to up_link, compute translation of car_to_barX, barX_to_barY, barY_to_barZ and the rotation of barZ_to_littleX, littleX_to_littleY, littleY_to_littleZ
+    """
+    def __init__(self):
+
+        # tf series for listening
+        self._tfBuffer = tf2_ros.Buffer()
+        self._listener = tf2_ros.TransformListener(self._tfBuffer)
+
+        # to contan the translation of car_to_barX, barX_to_barY, barY_to_barZ
+        self._T_down_to_up_trans = np.mat(np.eye(4))
+
+        # to contain the rotation of barZ_to_littleX, littleX_to_littleY, littleY_to_littleZ
+        self._T_down_to_up_rot = np.mat(np.eye(4))
+
+        self._Z_OFFSET = 1.075
+
+    def listen_to_tf(self):
+        try:
+            transform_stamped = self._tfBuffer.lookup_transform('down_link', 'up_link', rospy.Time())   
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rospy.logerr("Transform from down_link to up_link lookup exception")
+            return False
+
+        self._T_down_to_up_trans = vector3_to_translation_matrix(transform_stamped.transform.translation)
+        self._T_down_to_up_rot = quaternion_to_rotation_matrix(transform_stamped.transform.rotation)
+
+        return True
+
+    def print_T_down_to_up(self):
+        
+        rospy.loginfo("T_down_to_up_trans is")
+        print self._T_down_to_up_trans
+
+        rospy.loginfo("T_down_to_up_rot is")
+        print self._T_down_to_up_rot
+
+    def compute_ik(self):
+        trans_x = self._T_down_to_up_trans[0, 3]
+        trans_y = self._T_down_to_up_trans[1, 3]
+        trans_z = self._T_down_to_up_trans[2, 3] - self._Z_OFFSET
+
+        rospy.loginfo("Translation in x:{}, y:{}, z:{}".format(trans_x, trans_y, trans_z))

@@ -56,3 +56,7 @@ class GradientOptimizer:
         total_cost = car_cost+wx_cost+pole_cost
 
         return total_cost
+
+class SimpleOptimizer:
+    def __init__(self):
+        pass

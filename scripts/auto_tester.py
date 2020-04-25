@@ -33,7 +33,7 @@ if __name__ == "__main__":
             if para_ik.listen_to_up_down_fixed_tf():
                 listened_to_fixed = True
             else:
-                rospy.logfatal("listening to fixed tf failed")
+                rospy.logerr("listening to fixed tf failed")
         else: # listned_to_fixed is True
             # listen to tf from down_num to up_num
             listen_to_tf_succ = para_ik.listen_to_tf()
@@ -42,7 +42,7 @@ if __name__ == "__main__":
                 # calculate the num from listened tf, this should be 100 percent correct
                 para_ik.calculate_pole_length_from_inherent()
             else:
-                rospy.logfatal("listening to down_i-up_i transform failed.")
+                rospy.logerr("listening to down_i-up_i transform failed.")
                 
             parallel_pose_desired = ParallelPose()
 
@@ -53,14 +53,14 @@ if __name__ == "__main__":
                 parallel_pose_desired.y = o_to_down_tf.translation.y
                 parallel_pose_desired.theta = quaternion_to_euler(o_to_down_tf.rotation)[0]
             else:
-                rospy.logfatal("listening to {}-down_link transform failed.".format(origin))
+                rospy.logerr("listening to {}-down_link transform failed.".format(origin))
 
             # get transform from up_link to wx_link
             (up_to_wx_succ, up_to_wx_tf) = para_ik.get_transform("up_link", "wx_link")
             if up_to_wx_succ:
                 parallel_pose_desired.alpha = quaternion_to_euler(up_to_wx_tf.rotation)[0]
             else:
-                rospy.logfatal("listening to up_link-wx_link transform failed.")
+                rospy.logerr("listening to up_link-wx_link transform failed.")
             
             # get transform from origin to wx_link
             (o_to_wx_succ, o_to_wx_tf) = para_ik.get_transform(origin, "wx_link")
