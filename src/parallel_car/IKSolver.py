@@ -289,7 +289,7 @@ class ParallelIKSolver:
 class SerialIKSolver:
     """Given transform form down_link to up_link, compute translation of car_to_barX, barX_to_barY, barY_to_barZ and the rotation of barZ_to_littleX, littleX_to_littleY, littleY_to_littleZ
     """
-    def __init__(self):
+    def __init__(self, run_env="rviz"):
         """Constructor function for class SerialIKSolver
         """
 
@@ -304,6 +304,11 @@ class SerialIKSolver:
         self._T_down_to_up_rot = np.mat(np.eye(4))
 
         self._Z_OFFSET = 1.075
+
+        if run_env=='rviz':
+            self._o_to_down_height = CAR_HEIGHT/2.0
+        else: # run_env== 'gazebo'
+            self._o_to_down_height = CAR_HEIGHT
 
     def listen_to_tf(self):
         """Use private _tfBuffer to look up transform from down_link to up_link and store it in _T_down_to_up_trans and _T_down_to_up_rot
@@ -332,7 +337,7 @@ class SerialIKSolver:
         rospy.loginfo("T_down_to_up_rot is")
         print self._T_down_to_up_rot
 
-    def compute_ik(self):
+    def compute_ik_from_inherent(self):
         """Compute inverse kinematics of three prismatic joints and three revolute joints from stored transformation
         """
 
@@ -354,3 +359,59 @@ class SerialIKSolver:
         gamma = np.arctan2(-self._T_down_to_up_rot[0, 1], self._T_down_to_up_rot[0, 0])
 
         rospy.loginfo("Rotation in alpha:{}, beta:{}, gamma:{}".format(alpha, beta, gamma))
+
+    def compute_ik_from_target(self, parallel_pose_desired, wx_pose):
+
+        # although Point-type msg can also be used, however, for clarity, first CONVERT to Vector3-type msg
+        T_wx_trans = vector3_to_translation_matrix(Vector3(wx_pose.position.x, wx_pose.position.y, wx_pose.position.z))
+        T_wx_rot = quaternion_to_rotation_matrix(wx_pose.orientation)
+
+        # multiply translation matrix first
+        T_o_to_wx = T_wx_trans*T_wx_rot
+
+        
+        # rospy.loginfo("T_o_to_wx is")
+        # print T_o_to_wx
+
+        T_down_trans = vector3_to_translation_matrix(Vector3(parallel_pose_desired.x, parallel_pose_desired.y, self._o_to_down_height))
+        T_down_rot = Rotation('z', parallel_pose_desired.theta)
+
+        # multply translation matrix first
+        T_o_to_down = T_down_trans*T_down_rot
+
+        # rospy.loginfo("T_o_to_down is")
+        # print T_o_to_down
+
+        T_up_to_wx = Translation('z', ADDON_LENGTH) * Rotation('y', np.pi/4.0) * Translation('z', ADDON_LENGTH) * Rotation('z', parallel_pose_desired.alpha)
+
+        # rospy.loginfo("T_up_to_wx is")
+        # print T_up_to_wx
+
+        T_down_to_up = T_o_to_down.I * T_o_to_wx * T_up_to_wx.I
+
+        trans_x = T_down_to_up[0, 3]
+        trans_y = T_down_to_up[1, 3]
+        trans_z = T_down_to_up[2, 3] - self._Z_OFFSET
+
+        rospy.loginfo("Translation in x:{}, y:{}, z:{}".format(trans_x, trans_y, trans_z))
+
+        # alpha, beta, gamma are all restricted to (-pi/2, pi/2), so sin(beta) 
+        # alpha: rotation about x-axis
+        # beta:  rotation about y-axis
+        # gamma: rotation about z-axis
+
+        alpha = np.arctan2(-T_down_to_up[1, 2], T_down_to_up[2, 2])
+        
+        beta = np.arcsin(T_down_to_up[0, 2])
+        
+        gamma = np.arctan2(-T_down_to_up[0, 1], T_down_to_up[0, 0])
+
+        rospy.loginfo("Rotation in alpha:{}, beta:{}, gamma:{}".format(alpha, beta, gamma))
+
+    def get_transform(self, source_link, target_link):
+        try:
+            transform_stamped = self._tfBuffer.lookup_transform(source_link, target_link, rospy.Time())
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rospy.logerr("Transform from {} to {} lookup exception".format(source_link, target_link))
+            return (False, None)
+        return (True, transform_stamped.transform)
