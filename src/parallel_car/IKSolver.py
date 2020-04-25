@@ -324,8 +324,22 @@ class SerialIKSolver:
         print self._T_down_to_up_rot
 
     def compute_ik(self):
+
         trans_x = self._T_down_to_up_trans[0, 3]
         trans_y = self._T_down_to_up_trans[1, 3]
         trans_z = self._T_down_to_up_trans[2, 3] - self._Z_OFFSET
 
         rospy.loginfo("Translation in x:{}, y:{}, z:{}".format(trans_x, trans_y, trans_z))
+
+        # alpha, beta, gamma are all restricted to (-pi/2, pi/2), so sin(beta) 
+        # alpha: rotation about x-axis
+        # beta:  rotation about y-axis
+        # gamma: rotation about z-axis
+
+        alpha = np.arctan2(-self._T_down_to_up_rot[1, 2], self._T_down_to_up_rot[2, 2])
+        
+        beta = np.arcsin(self._T_down_to_up_rot[0, 2])
+        
+        gamma = np.arctan2(-self._T_down_to_up_rot[0, 1], self._T_down_to_up_rot[0, 0])
+
+        rospy.loginfo("Rotation in alpha:{}, beta:{}, gamma:{}".format(alpha, beta, gamma))

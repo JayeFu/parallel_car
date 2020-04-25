@@ -5,6 +5,7 @@
 - [ ] 装好了solidworks之后看一下stewart机构平台中心到球铰的角度
 - [x] 需要写一个auto tester来检测计算的正确性，应该在这里利用listener来读`odom`到`down_link`的变换和`odom`到`wx_link`的变换，然后输入`parallel_pose_desired`和`wx_pose`
 - [x] 更改`diff_derivation.m`中的`T_up_to_wx`
+- [ ] 编写`SerialIKSolver`，功能需要实现，在给定`up_link`的情况下，求解`car_to_barX, barX_to_barY, barY_to_barZ`的平动距离，并求解`barZ_to_littleX, littleX_to_littleY, littleY_to_littleZ`的转动角度
 
 # 思路
 
@@ -46,18 +47,37 @@ $$
 
 计算如下
 1. 在式$(3)$中，$T_{down}^{down\_1}$和$T_{up}^{up\_1}$是固定的
-   1. $T_{down}^{down\_1}$的产生方式是先绕$z$轴进行旋转一个角度，然后沿$x$轴行进一段距离，沿$z$轴行进一段距离
-2. $T_o^{down}$可以通过`ParallelPose`中的`x,y,theta`来确定。变换方式如下
+2. $T_{down}^{down\_1}$的产生方式是先绕$z$轴进行旋转一个角度，然后沿$x$轴行进一段距离，沿$z$轴行进一段距离
+3. $T_o^{down}$可以通过`ParallelPose`中的`x,y,theta`来确定。变换方式如下
 
 ```Python
 T_o_to_down=Translation('x', x)*Translation('y', y)*Translation('z', CAR_HEIGHT)*Rotation('z', theta)
 ```
-3. $T_o^{wx}$在一次计算中也是给定的，不会发生改变
-4. $T_{up}^{wx}$可以通过`ParallelPose`中的`alpha`来确定，变换方式如下
+4. $T_o^{wx}$在一次计算中也是给定的，不会发生改变
+5. $T_{up}^{wx}$可以通过`ParallelPose`中的`alpha`来确定，变换方式如下
 
 ```Python
 T_up_to_wx = Rotation('z', alpha)
 ```
+6. 在获得了$T_{down}^{up}$之后，我们要计算三关节的平动和三关节的转动。$T_{down}^{up}$是通过如下变换复合得到的
+```Python
+T_down_to_up=Translation('x', trans_x)*Translation('y', trans_y)*Translation('z', trans_z)\
+* Rotation('x', rot_x) * Rotation('y', rot_y) * Rotation('z', rot_z)
+```
+其中的平动复合矩阵比较好求，直接读数就可以。
+
+而转动复合矩阵比较难求，我用`sym_cal.m`脚本计算了一下，公式如下
+$$
+\left[
+\begin{matrix}
+   \cos(\beta)*\cos(\gamma), & -\cos(\beta)*\sin(\gamma), & \sin(\beta), & 0 \\
+   \cos(\alpha)*\sin(\gamma) + \cos(\gamma)*\sin(\alpha)*\sin(\beta), & \cos(\alpha)*\cos(\gamma) - \sin(\alpha)*\sin(\beta)*\sin(\gamma), & -\cos(\beta)*\sin(\alpha), & 0\\
+   \sin(\alpha)*\sin(\gamma) - \cos(\alpha)*\cos(\gamma)*\sin(\beta), & \cos(\gamma)*\sin(\alpha) + \cos(\alpha)*\sin(\beta)*\sin(\gamma), & \cos(\alpha)*\cos(\beta), & 0\\
+   0, & 0, & 0, & 1
+\end{matrix} 
+\right]
+$$
+
 
 # TIPS
 1. In RVIZ, `rviz/DisplayTypes/Axes` has three axises
