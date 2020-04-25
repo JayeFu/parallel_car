@@ -290,6 +290,8 @@ class SerialIKSolver:
     """Given transform form down_link to up_link, compute translation of car_to_barX, barX_to_barY, barY_to_barZ and the rotation of barZ_to_littleX, littleX_to_littleY, littleY_to_littleZ
     """
     def __init__(self):
+        """Constructor function for class SerialIKSolver
+        """
 
         # tf series for listening
         self._tfBuffer = tf2_ros.Buffer()
@@ -304,6 +306,11 @@ class SerialIKSolver:
         self._Z_OFFSET = 1.075
 
     def listen_to_tf(self):
+        """Use private _tfBuffer to look up transform from down_link to up_link and store it in _T_down_to_up_trans and _T_down_to_up_rot
+
+        Returns:
+            [bool] -- if successfully lookup transform from down_link to up_link and store it, return True, else return False
+        """
         try:
             transform_stamped = self._tfBuffer.lookup_transform('down_link', 'up_link', rospy.Time())   
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
@@ -316,6 +323,8 @@ class SerialIKSolver:
         return True
 
     def print_T_down_to_up(self):
+        """Print stored _T_down_to_up_trans and _T_down_to_up_rot
+        """
         
         rospy.loginfo("T_down_to_up_trans is")
         print self._T_down_to_up_trans
@@ -324,6 +333,8 @@ class SerialIKSolver:
         print self._T_down_to_up_rot
 
     def compute_ik(self):
+        """Compute inverse kinematics of three prismatic joints and three revolute joints from stored transformation
+        """
 
         trans_x = self._T_down_to_up_trans[0, 3]
         trans_y = self._T_down_to_up_trans[1, 3]
