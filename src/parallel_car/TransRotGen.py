@@ -240,8 +240,41 @@ def quaternion_to_euler(quat):
     return [yaw, pitch, roll]
 
 def yaw_from_quaternion_only_Z(quat):
+    """A function to get yaw from quaternion which ONLY contains rotation about z-axis
+
+    Arguments:
+        quat {Quaternion} -- a quaternion resulted from rotation only about z-axis
+
+    Returns:
+        [double] -- yaw or rotation angle about z-axis
+    """
     T_rot_Z = quaternion_to_rotation_matrix(quat)
 
     yaw = np.arctan2(T_rot_Z[1, 0], T_rot_Z[0, 0])
 
     return yaw
+
+def rpy_from_quaternion(quat):
+    """A function to get roll, pitch, yaw respectively from quaternion
+
+    Arguments:
+        quat {Quaternion} -- a quaternion resulted from rotation first about x-axis, then about y-axis and finally about z-axis
+
+    Returns:
+        [tuple] -- a tuple containing roll, pitch, yaw respectively
+    """
+
+    T_rot = quaternion_to_rotation_matrix(quat)
+
+    # alpha, beta, gamma are all restricted to (-pi/2, pi/2), so sin(beta) can be used to calculate beta
+    # alpha: roll : rotation about x-axis
+    # beta : pitch: rotation about y-axis
+    # gamma: yaw  : rotation about z-axis
+
+    alpha = np.arctan2(-T_rot[1, 2], T_rot[2, 2])
+    
+    beta = np.arcsin(T_rot[0, 2])
+    
+    gamma = np.arctan2(-T_rot[0, 1], T_rot[0, 0])
+
+    return (alpha, beta, gamma)

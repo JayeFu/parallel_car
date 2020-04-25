@@ -303,12 +303,41 @@ class SerialIKSolver:
         # to contain the rotation of barZ_to_littleX, littleX_to_littleY, littleY_to_littleZ
         self._T_down_to_up_rot = np.mat(np.eye(4))
 
-        self._Z_OFFSET = 1.075
+        self._Z_OFFSET = 1.075 # default to 1.075, will be changed in listen_to_fixed_tf
+
+        self._T_up_to_wx_no_alpha = Translation('z', ADDON_LENGTH) * Rotation('y', np.pi/4.0) * Translation('z', ADDON_LENGTH)
 
         if run_env=='rviz':
             self._o_to_down_height = CAR_HEIGHT/2.0
         else: # run_env== 'gazebo'
             self._o_to_down_height = CAR_HEIGHT
+
+    def listen_to_fixed_tf(self):
+        """Listen to the transform from down_link to up_link and set it to _Z_OFFSET
+
+        Returns:
+            [bool] -- if successfully listen to transform from down_link to up_link return True, else resturn False
+        """
+
+        # get original offset between down_link and up_link
+        try:
+            transform_stamped = self._tfBuffer.lookup_transform('down_link', 'up_link', rospy.Time())   
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rospy.logerr("Transform from down_link to up_link lookup exception")
+            return False
+        self._Z_OFFSET = transform_stamped.transform.translation.z
+
+        # get original offset between down_link and up_link
+        try:
+            transform_stamped = self._tfBuffer.lookup_transform('up_link', 'wx_link', rospy.Time())   
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rospy.logerr("Transform from up_link to wx_link lookup exception")
+            return False
+        T_up_to_wx_no_alpha_trans = vector3_to_translation_matrix(transform_stamped.transform.translation)
+        T_up_to_wx_no_alpha_rot = quaternion_to_rotation_matrix(transform_stamped.transform.rotation)
+        self._T_up_to_wx_no_alpha = T_up_to_wx_no_alpha_trans*T_up_to_wx_no_alpha_rot
+
+        return True
 
     def listen_to_tf(self):
         """Use private _tfBuffer to look up transform from down_link to up_link and store it in _T_down_to_up_trans and _T_down_to_up_rot
@@ -345,6 +374,7 @@ class SerialIKSolver:
         trans_y = self._T_down_to_up_trans[1, 3]
         trans_z = self._T_down_to_up_trans[2, 3] - self._Z_OFFSET
 
+        rospy.loginfo("From Inherent")
         rospy.loginfo("Translation in x:{}, y:{}, z:{}".format(trans_x, trans_y, trans_z))
 
         # alpha, beta, gamma are all restricted to (-pi/2, pi/2), so sin(beta) 
@@ -382,7 +412,7 @@ class SerialIKSolver:
         # rospy.loginfo("T_o_to_down is")
         # print T_o_to_down
 
-        T_up_to_wx = Translation('z', ADDON_LENGTH) * Rotation('y', np.pi/4.0) * Translation('z', ADDON_LENGTH) * Rotation('z', parallel_pose_desired.alpha)
+        T_up_to_wx = self._T_up_to_wx_no_alpha * Rotation('z', parallel_pose_desired.alpha)
 
         # rospy.loginfo("T_up_to_wx is")
         # print T_up_to_wx
@@ -393,9 +423,10 @@ class SerialIKSolver:
         trans_y = T_down_to_up[1, 3]
         trans_z = T_down_to_up[2, 3] - self._Z_OFFSET
 
+        rospy.loginfo("From Target")
         rospy.loginfo("Translation in x:{}, y:{}, z:{}".format(trans_x, trans_y, trans_z))
 
-        # alpha, beta, gamma are all restricted to (-pi/2, pi/2), so sin(beta) 
+        # alpha, beta, gamma are all restricted to (-pi/2, pi/2), so sin(beta) can be used to calculate beta
         # alpha: rotation about x-axis
         # beta:  rotation about y-axis
         # gamma: rotation about z-axis
