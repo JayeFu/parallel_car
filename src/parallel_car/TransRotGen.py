@@ -238,3 +238,10 @@ def quaternion_to_euler(quat):
     t4 = +1.0 - 2.0 * (y * y + z * z)
     yaw = math.atan2(t3, t4)
     return [yaw, pitch, roll]
+
+def yaw_from_quaternion_only_Z(quat):
+    T_rot_Z = quaternion_to_rotation_matrix(quat)
+
+    yaw = np.arctan2(T_rot_Z[1, 0], T_rot_Z[0, 0])
+
+    return yaw
