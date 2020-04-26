@@ -240,7 +240,7 @@
         <parent link="car_link"/>
         <child link="barX_link"/>
         <axis xyz="1.0 0.0 0.0"/>
-        <limit lower="-0.5" upper="0.5" effort="5.0" velocity="0.5"/>
+        <limit lower="-0.5" upper="0.5" effort="50.0" velocity="2.0"/>
     </joint>
 
     <joint name="barX_to_barY" type="prismatic">
@@ -248,7 +248,7 @@
         <parent link="barX_link"/>
         <child link="barY_link"/>
         <axis xyz="0.0 1.0 0.0"/>
-        <limit lower="-0.5" upper="0.5" effort="5.0" velocity="0.5"/>
+        <limit lower="-0.5" upper="0.5" effort="50.0" velocity="2.0"/>
     </joint>
 
     <joint name="barY_to_barZ" type="prismatic">
@@ -256,7 +256,7 @@
         <parent link="barY_link"/>
         <child link="barZ_link"/>
         <axis xyz="0.0 0.0 1.0"/>
-        <limit lower="-0.5" upper="0.5" effort="5.0" velocity="0.5"/>
+        <limit lower="-0.5" upper="0.5" effort="80.0" velocity="2.0"/>
     </joint>
 
     <joint name="barZ_to_littleX" type="revolute">
