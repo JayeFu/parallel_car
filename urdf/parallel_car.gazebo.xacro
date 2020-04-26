@@ -46,7 +46,8 @@
         </plugin>
     </gazebo>
 
-    <gazebo>
+    <!-- with support links and joints, do not need to use planar_move -->
+    <!--gazebo>
         <plugin name="base_controller" filename="libgazebo_ros_planar_move.so">
             <commandTopic>cmd_vel</commandTopic>
             <odometryTopic>odom</odometryTopic>
@@ -54,6 +55,6 @@
             <odometryRate>20.0</odometryRate>
             <robotBaseFrame>car_link</robotBaseFrame>
         </plugin>
-    </gazebo>
+    </gazebo-->
 
 </robot>

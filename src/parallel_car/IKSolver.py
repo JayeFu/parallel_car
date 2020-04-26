@@ -327,7 +327,7 @@ class SerialIKSolver:
             return False
         self._Z_OFFSET = transform_stamped.transform.translation.z
 
-        # get original offset between down_link and up_link
+        # get original transform from up_link to wx_link
         try:
             transform_stamped = self._tfBuffer.lookup_transform('up_link', 'wx_link', rospy.Time())   
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
@@ -446,3 +446,14 @@ class SerialIKSolver:
             rospy.logerr("Transform from {} to {} lookup exception".format(source_link, target_link))
             return (False, None)
         return (True, transform_stamped.transform)
+
+    def get_transform_stamped(self, source_link, target_link):
+        try:
+            transform_stamped = self._tfBuffer.lookup_transform(source_link, target_link, rospy.Time())
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rospy.logerr("Transform from {} to {} lookup exception".format(source_link, target_link))
+            return (False, None)
+        return (True, transform_stamped)
+
+    def compute_optimal_up_pose(self, wx_pose):
+        pass

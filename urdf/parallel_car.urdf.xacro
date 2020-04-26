@@ -24,6 +24,9 @@
     <xacro:property name="addon_length" value="0.5"/>
     <xacro:property name="addon_width" value="0.05"/>
 
+    <!-- inlcude support xacro files -->
+    <!-- need to use some xacro properties little_width, little_mass, so include them here-->
+    <xacro:include filename="$(find parallel_car)/urdf/support.urdf.xacro"/>
 
     <!-- links -->
     <link name="car_link"><!--from origin to top-->
@@ -49,8 +52,8 @@
     <link name="barX_link">
         <inertial>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-            <mass value="0.01"/>
-            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
         </inertial>
         <visual>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
@@ -64,8 +67,8 @@
     <link name="barY_link">
         <inertial>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-            <mass value="0.01"/>
-            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
         </inertial>
         <visual>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
@@ -79,8 +82,8 @@
     <link name="barZ_link">
         <inertial>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-            <mass value="0.01"/>
-            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
         </inertial>
         <visual>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
@@ -94,8 +97,8 @@
     <link name="littleX_link">
         <inertial>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-            <mass value="0.01"/>
-            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
         </inertial>
         <visual>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
@@ -108,8 +111,8 @@
     <link name="littleY_link">
         <inertial>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-            <mass value="0.01"/>
-            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
         </inertial>
         <visual>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
@@ -122,8 +125,8 @@
     <link name="littleZ_link">
         <inertial>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-            <mass value="0.01"/>
-            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
         </inertial>
         <visual>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>

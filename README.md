@@ -78,6 +78,9 @@ $$
 \right]
 $$
 
+7. 在`SimpleOptimizer`中对于`alpha`的优化想法
+   1. 在给定`wx_pose`的情况下，对于一个初始`alpha=0`，计算`up_link`的位姿
+
 
 # TIPS
 1. In RVIZ, `rviz/DisplayTypes/Axes` has three axises
