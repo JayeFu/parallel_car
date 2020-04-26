@@ -28,7 +28,8 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         (o_to_wx_succ, o_to_wx_tf) = seri_ik.get_transform(origin, "wx_link")
         if o_to_wx_succ:
-            (optimal_alpha, T_o_to_wx_modified) = optimizer.compute_optimal_alpha(o_to_wx_tf.rotation)
+            (optimal_alpha, T_o_to_wx_modified) = optimizer.compute_optimal_alpha(o_to_wx_tf)
+            seri_ik.compute_ik_from_modified_matrix(T_o_to_wx_modified)
         else:
             rospy.logerr("listening to {}-wx_link transform failed.".format(origin))
 

@@ -455,5 +455,10 @@ class SerialIKSolver:
             return (False, None)
         return (True, transform_stamped)
 
-    def compute_optimal_up_pose(self, wx_pose):
-        pass
+    def compute_ik_from_modified_matrix(self, T_o_to_wx_modified):
+        
+        T_up_to_wx = self._T_up_to_wx_no_alpha
+
+        T_o_to_up = T_o_to_wx_modified * T_up_to_wx.I
+
+        print T_o_to_up
