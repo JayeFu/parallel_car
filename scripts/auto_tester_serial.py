@@ -1,11 +1,10 @@
 #!/usr/bin/env python  
 
 import rospy
-from parallel_car.Optimizer import GradientOptimizer ,SimpleOptimizer
+from parallel_car.Optimizer import GradientOptimizer, SimpleOptimizer
 from parallel_car.IKSolver import ParallelPose ,ParallelIKSolver, SerialIKSolver
 from parallel_car.TransRotGen import quaternion_to_rotation_matrix, vector3_to_translation_matrix, transform_to_matrix, yaw_from_quaternion_only_Z
 from geometry_msgs.msg import Pose, Point
-from time import sleep
 
 # either 'rviz' or 'gazebo'
 RUN_ENV = 'rviz'

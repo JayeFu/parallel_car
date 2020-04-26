@@ -4,7 +4,7 @@ import rospy
 
 import numpy as np
 
-from numpy import sin, cos
+from parallel_car.TransRotGen import quaternion_to_rotation_matrix, Rotation
 
 class GradientOptimizer:
     """
@@ -60,3 +60,42 @@ class GradientOptimizer:
 class SimpleOptimizer:
     def __init__(self):
         pass
+
+    def compute_optimal_alpha(self, quat_o_to_wx):
+
+        # alpha to rotate z-axis of wx_link to let y-axis of wx_link maintain level
+        optimal_alpha = 0.0
+        
+        T_o_to_wx = quaternion_to_rotation_matrix(quat_o_to_wx)
+
+        # actually gamma in z-y-z pattern euler rotation
+        alpha1 = np.arctan2(T_o_to_wx[2, 1], T_o_to_wx[2, 0])
+
+        alpha2 = np.arctan2(-T_o_to_wx[2, 1], -T_o_to_wx[2, 0])
+
+        rospy.loginfo("alpha1 = {}, alpha2 = {}".format(alpha1, alpha2))
+
+        # i_global_z is z component of the representation of x-axis
+        # alpha will be chosen if i_global_z < 0
+        i_global_z1 = T_o_to_wx[2, 0]*np.cos(alpha1) + T_o_to_wx[2, 1]*np.sin(alpha1)
+
+        i_global_z2 = T_o_to_wx[2, 0]*np.cos(alpha2) + T_o_to_wx[2, 1]*np.sin(alpha2)
+
+        rospy.loginfo("i_global_z1 = {}, i_global_z2 = {}".format(i_global_z1, i_global_z2))
+
+        if i_global_z1 < 0:
+            optimal_alpha = alpha1
+        else: # i_global_x2 < 0
+            optimal_alpha = alpha2
+
+        rospy.loginfo("optimal_alpha = {}".format(optimal_alpha))
+
+        T_o_to_wx_modified = T_o_to_wx * Rotation('z', optimal_alpha)
+
+        j_standard = np.mat(np.array([0, 1, 0, 1]).reshape((-1, 1)))
+
+        # rospy.loginfo("After rotation about z-axis {}, y-axis in global is".format(optimal_alpha))
+        # print T_o_to_wx_modified * j_standard
+        
+
+        return (optimal_alpha, T_o_to_wx_modified)

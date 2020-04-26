@@ -264,7 +264,7 @@
         <parent link="barZ_link"/>
         <child link="littleX_link"/>
         <axis xyz="1.0 0.0 0.0"/>
-        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="5.0" velocity="0.5"/>
+        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="50.0" velocity="0.5"/>
     </joint>
 
     <joint name="littleX_to_littleY" type="revolute">
@@ -272,7 +272,7 @@
         <parent link="littleX_link"/>
         <child link="littleY_link"/>
         <axis xyz="0.0 1.0 0.0"/>
-        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="5.0" velocity="0.5"/>
+        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="50.0" velocity="0.5"/>
     </joint>
 
     <joint name="littleY_to_littleZ" type="revolute">
@@ -280,7 +280,7 @@
         <parent link="littleY_link"/>
         <child link="littleZ_link"/>
         <axis xyz="0.0 0.0 1.0"/>
-        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="5.0" velocity="0.5"/>
+        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="50.0" velocity="0.5"/>
     </joint>
 
     <joint name="addon_Tilt_to_wx" type="continuous">
@@ -288,7 +288,7 @@
         <parent link="addon_Tilt_link"/>
         <child link="wx_link"/>
         <axis xyz="0.0 0.0 1.0"/>
-        <limit effort="5.0" velocity="0.5"/>
+        <limit effort="50.0" velocity="0.5"/>
     </joint>
 
     <!-- up and down joints -->
