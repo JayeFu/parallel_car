@@ -67,6 +67,31 @@ class ParallelPose:
         resStr = "at (x:{}, y:{}), theta={}, alpha={}".format(self.x, self.y, self.theta, self.alpha)
         return resStr
 
+    def little_to_zero(self, tolerance=1e-5):
+        if abs(self.x) < tolerance:
+            self.x = 0
+            rospy.loginfo("parallel x to zero")
+        else: # for integrity
+            pass
+
+        if abs(self.y) < tolerance:
+            self.y = 0
+            rospy.loginfo("parallel y to zero")
+        else: # for integrity
+            pass
+        
+        if abs(self.theta) < tolerance:
+            self.theta = 0
+            rospy.loginfo("parallel theta to zero")
+        else: # for integrity
+            pass
+
+        if abs(self.alpha) < tolerance:
+            self.alpha = 0
+            rospy.loginfo("parallel alpha to zero")
+        else: # for integrity
+            pass
+
 
 class SerialPose:
     def __init__(self, x=0.0, y=0.0, z=0.0, alpha=0.0, beta=0.0, gamma=0.0):
@@ -80,6 +105,43 @@ class SerialPose:
     def __str__(self):
         resStr = "translation: (x:{}, y:{}, z:{}), (alpha:{}, beta:{}, gamma:{})".format(self.x, self.y, self.z, self.alpha, self.beta, self.gamma)
         return resStr
+
+    def little_to_zero(self, tolerance=1e-5):
+        if abs(self.x) < tolerance:
+            self.x = 0
+            rospy.loginfo("serial x to zero")
+        else: # for integrity
+            pass
+
+        if abs(self.y) < tolerance:
+            self.y = 0
+            rospy.loginfo("serial y to zero")
+        else: # for integrity
+            pass
+
+        if abs(self.z) < tolerance:
+            self.z = 0
+            rospy.loginfo("serial z to zero")
+        else: # for integrity
+            pass
+
+        if abs(self.alpha) < tolerance:
+            self.alpha = 0
+            rospy.loginfo("serial alpha to zero")
+        else: # for integrity
+            pass
+
+        if abs(self.beta) < tolerance:
+            self.beta = 0
+            rospy.loginfo("serial beta to zero")
+        else: # for integrity
+            pass
+
+        if abs(self.gamma) < tolerance:
+            self.gamma = 0
+            rospy.loginfo("serial gamma to zero")
+        else: # for integrity
+            pass
 
 
 class ParallelIKSolver:
