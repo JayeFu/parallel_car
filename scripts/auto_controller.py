@@ -30,14 +30,19 @@ if __name__ == "__main__":
 
     while not rospy.is_shutdown():
 
-        # control the pace
-        raw_input()
         if not listened_to_fixed:
+            # control the pace
+            raw_input()
             if seri_ik.listen_to_fixed_tf():
-                rospy.loginfo("Have listend to fixed tf")
+                rospy.loginfo("listend to fixed tf successfully")
                 listened_to_fixed = True
             else:
                 rospy.logerr("listening to fixed failed")
+        else:
+            rospy.loginfo("have listend to fixed tf")
+
+        # control the pace
+        raw_input()
 
         (o_to_wx_succ, o_to_wx_tf) = seri_ik.get_transform(origin, "wx_link")
         if o_to_wx_succ:

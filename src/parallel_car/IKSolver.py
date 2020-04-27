@@ -341,6 +341,8 @@ class SerialIKSolver:
             return False
         self._Z_OFFSET = transform_stamped.transform.translation.z
 
+        # rospy.loginfo("z-axis offset is {}".format(self._Z_OFFSET))
+
         # get original transform from up_link to wx_link
         try:
             transform_stamped = self._tfBuffer.lookup_transform('up_link', 'wx_link', rospy.Time())   
@@ -470,6 +472,9 @@ class SerialIKSolver:
         return (True, transform_stamped)
 
     def compute_ik_from_modified_matrix(self, T_o_to_wx_modified):
+        
+        # rospy.loginfo("T_o_to_wx_modified is")
+        # print T_o_to_wx_modified
         
         # fixed transformation matrix from up_link to wx_link
         T_up_to_wx = self._T_up_to_wx_no_alpha

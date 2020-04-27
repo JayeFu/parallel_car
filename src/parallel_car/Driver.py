@@ -60,7 +60,7 @@ class BaseAndMechDriver:
             trajPt.velocities.append(0.0)
 
         # time to reach the joint trajectory point specified to 2.0 since this will be controlled by my enter
-        trajPt.time_from_start = rospy.Duration(secs=2.0)
+        trajPt.time_from_start = rospy.Duration(secs=4.0)
         # add the joint trajectory point to the goal
         goal.trajectory.points.append(trajPt)
 
