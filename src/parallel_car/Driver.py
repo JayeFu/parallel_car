@@ -11,7 +11,14 @@ from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryG
 from trajectory_msgs.msg import JointTrajectoryPoint
 
 class BaseAndMechDriver:
+    """A class used to control the motion of both base and mechanism onboard
+    """
     def __init__(self, action_ns='/parallel_car/support_and_mech_controller/follow_joint_trajectory'):
+        """Construction function for class BaseAndMechDriver
+
+        Keyword Arguments:
+            action_ns {str} -- action namespace (default: {'/parallel_car/support_and_mech_controller/follow_joint_trajectory'})
+        """
 
         self._joint_names = ['world_to_supportX', 'supportX_to_supportY', 'supportY_to_car', # for movement of base
          'car_to_barX', 'barX_to_barY', 'barY_to_barZ', # for translation of mech
@@ -27,6 +34,12 @@ class BaseAndMechDriver:
         rospy.loginfo("Server detected")
 
     def send_trajectory_from_controller(self, parallel_pose_desired, serial_pose_desired):
+        """A function used to control drive base and mechanism to specified pose
+
+        Arguments:
+            parallel_pose_desired {ParallelPose} -- to specify the pose of the base and the angle of wx respective to addon_Tilt_link
+            serial_pose_desired {SeiralPose} -- to specify the translation and rotation of the mechanism onboard
+        """
 
         rospy.loginfo("Start going to the point specified by controller")
 

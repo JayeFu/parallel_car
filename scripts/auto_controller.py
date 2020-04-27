@@ -41,8 +41,12 @@ if __name__ == "__main__":
         else:
             rospy.loginfo("have listend to fixed tf")
 
-        # control the pace
-        raw_input()
+        try:
+            # control the pace
+            raw_input()
+        except EOFError: # catch EOFError
+            print "Manual ending"
+            break
 
         (o_to_wx_succ, o_to_wx_tf) = seri_ik.get_transform(origin, "wx_link")
         if o_to_wx_succ:

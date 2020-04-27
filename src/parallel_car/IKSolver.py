@@ -293,6 +293,15 @@ class ParallelIKSolver:
         return copy.copy(self._pole_length_list)
 
     def get_transform(self, source_link, target_link):
+        """A function to get transform from source_link to target_link
+
+        Arguments:
+            source_link {str} -- source link
+            target_link {str} -- target link
+
+        Returns:
+            [tuple] -- if have successfully get the transform, first item is True, else False. If first item is True, second item is the transform, else None-type object
+        """
         try:
             transform_stamped = self._tfBuffer.lookup_transform(source_link, target_link, rospy.Time())
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
@@ -407,6 +416,12 @@ class SerialIKSolver:
         rospy.loginfo("Rotation in alpha:{}, beta:{}, gamma:{}".format(alpha, beta, gamma))
 
     def compute_ik_from_target(self, parallel_pose_desired, wx_pose):
+        """Compute inverse kinematics of three prismatic joints and three revolute joints from specified pose of parallel mechanism and wx_pose
+
+        Arguments:
+            parallel_pose_desired {ParallelPose} -- a ParallelPose specifying the pose of the parallel car
+            wx_pose {Pose} -- Pose-type msg specifying the pose of wx_link
+        """
 
         # although Point-type msg can also be used, however, for clarity, first CONVERT to Vector3-type msg
         T_wx_trans = vector3_to_translation_matrix(Vector3(wx_pose.position.x, wx_pose.position.y, wx_pose.position.z))
@@ -456,6 +471,15 @@ class SerialIKSolver:
         rospy.loginfo("Rotation in alpha:{}, beta:{}, gamma:{}".format(alpha, beta, gamma))
 
     def get_transform(self, source_link, target_link):
+        """A function to get transform from source_link to target_link
+
+        Arguments:
+            source_link {str} -- source link
+            target_link {str} -- target link
+
+        Returns:
+            [tuple] -- if have successfully get the transform, first item is True, else False. If first item is True, second item is the transform, else None-type object
+        """
         try:
             transform_stamped = self._tfBuffer.lookup_transform(source_link, target_link, rospy.Time())
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
@@ -464,6 +488,15 @@ class SerialIKSolver:
         return (True, transform_stamped.transform)
 
     def get_transform_stamped(self, source_link, target_link):
+        """A function to get stamped transform from source_link to target_link
+
+        Arguments:
+            source_link {str} -- source link
+            target_link {str} -- target link
+
+        Returns:
+            [tuple] -- if have successfully get the transform, first item is True, else False. If first item is True, second item is the stamped transform, else None-type object
+        """
         try:
             transform_stamped = self._tfBuffer.lookup_transform(source_link, target_link, rospy.Time())
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
@@ -472,6 +505,16 @@ class SerialIKSolver:
         return (True, transform_stamped)
 
     def compute_ik_from_modified_matrix(self, T_o_to_wx_modified):
+        """A function to compute the pose of both the base and the mechanism onboard
+
+        Arguments:
+            T_o_to_wx_modified {4x4 Numpy matrix} -- homogeneous transformation matrix representing the transform from origin to wx_link
+
+        Returns:
+            [tuple] -- the first item is a ParallelPose-type object specifying the motion of the base and wx_link, 
+                    the second item is a SerialPose-type object specifying the motion of the machanism onboard, 
+                    which contains the motion of three prismatic joints and three revolute joints
+        """
         
         # rospy.loginfo("T_o_to_wx_modified is")
         # print T_o_to_wx_modified

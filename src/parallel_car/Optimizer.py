@@ -62,6 +62,14 @@ class SimpleOptimizer:
         pass
 
     def compute_optimal_alpha(self, o_to_wx_tf):
+        """A function to compute the optimal alpha from specified wx pose
+
+        Arguments:
+            o_to_wx_tf {Transform} -- the transformation from origin to wx_link
+
+        Returns:
+            [tuple] -- a tuple containing the optimal alpha and the homogeneous transformation matrix neutralizing the optimal alpha
+        """
 
         # alpha to rotate z-axis of wx_link to let y-axis of wx_link maintain level
         optimal_alpha = 0.0
