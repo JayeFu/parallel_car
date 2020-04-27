@@ -525,7 +525,7 @@ class SerialIKSolver:
         parallel_pose_desired.y = car_y
         parallel_pose_desired.theta = car_theta
 
-        # se
+        # serial_pose_desired to specify the motion of three prismatic joints and three revolute joints
         serial_pose_desired = SerialPose()
 
         serial_pose_desired.x = trans_x

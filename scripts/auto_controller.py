@@ -5,9 +5,10 @@ from parallel_car.Optimizer import GradientOptimizer, SimpleOptimizer
 from parallel_car.IKSolver import ParallelPose ,ParallelIKSolver, SerialIKSolver
 from parallel_car.TransRotGen import quaternion_to_rotation_matrix, vector3_to_translation_matrix, transform_to_matrix, yaw_from_quaternion_only_Z
 from geometry_msgs.msg import Pose, Point
+from parallel_car.Driver import BaseAndMechDriver
 
 # either 'rviz' or 'gazebo'
-RUN_ENV = 'rviz'
+RUN_ENV = 'gazebo'
 
 if __name__ == "__main__":
     rospy.init_node("auto_controller")
@@ -15,6 +16,8 @@ if __name__ == "__main__":
     seri_ik = SerialIKSolver(run_env=RUN_ENV)
 
     optimizer = SimpleOptimizer()
+
+    driver = BaseAndMechDriver()
 
     listened_to_fixed = False
 
@@ -26,16 +29,29 @@ if __name__ == "__main__":
         origin = 'world'
 
     while not rospy.is_shutdown():
+
+        # control the pace
+        raw_input()
+
         (o_to_wx_succ, o_to_wx_tf) = seri_ik.get_transform(origin, "wx_link")
         if o_to_wx_succ:
+            rospy.loginfo("Successfully get the transfrom from {} to wx_link".format(origin))
+            # look for optimal alpha and modified transformation matrix of wx_link after let its y-axis to level in global coordinate
             (optimal_alpha, T_o_to_wx_modified) = optimizer.compute_optimal_alpha(o_to_wx_tf)
+            # from T_o_to_wx_modified get disired parallel pose and serial pose
             (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_modified_matrix(T_o_to_wx_modified)
+            # need to revert optimal alpha for parallel pose
+            parallel_pose_desired.alpha = -optimal_alpha
+            # go to desired pose by driver
+            driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
         else:
             rospy.logerr("listening to {}-wx_link transform failed.".format(origin))
 
+        
+        '''
         try:
             rate.sleep()
         except ROSInterruptException:
             print "end while sleeping"
             break
-        
+        '''

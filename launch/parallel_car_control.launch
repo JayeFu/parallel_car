@@ -1,7 +1,7 @@
 <launch>
 
   <!--manually control the joints using joint_trajectory_controller-->
-  <arg name="manual" default="false"/>
+  <arg name="manual" default="true "/>
 
   <!-- Load joint controller configurations from YAML file to parameter server -->
   <rosparam file="$(find parallel_car)/config/controllers.yaml" command="load"/>
