@@ -57,7 +57,7 @@
     </joint>
 
     <joint name="supportY_to_car" type="continuous">
-        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <origin xyz="0.0 0.0 ${car_height/2.0}" rpy="0.0 0.0 0.0"/>
         <parent link="supportY_link"/>
         <child link="car_link"/>
         <axis xyz="0.0 0.0 1.0"/>

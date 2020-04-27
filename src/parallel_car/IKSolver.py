@@ -64,7 +64,7 @@ class ParallelPose:
             return add_result
 
     def __str__(self):
-        resStr = "at ({}, {}), theta={}, alpha={}".format(self.x, self.y, self.theta, self.alpha)
+        resStr = "at (x:{}, y:{}), theta={}, alpha={}".format(self.x, self.y, self.theta, self.alpha)
         return resStr
 
 
@@ -76,6 +76,10 @@ class SerialPose:
         self.alpha = alpha
         self.beta = beta
         self.gamma = gamma
+
+    def __str__(self):
+        resStr = "translation: (x:{}, y:{}, z:{}), (alpha:{}, beta:{}, gamma:{})".format(self.x, self.y, self.z, self.alpha, self.beta, self.gamma)
+        return resStr
 
 
 class ParallelIKSolver:
@@ -473,6 +477,7 @@ class SerialIKSolver:
         # transformation matrix from origin to up_link
         T_o_to_up = T_o_to_wx_modified * T_up_to_wx.I
 
+        # rospy.loginfo("T_o_to_up is")
         # print T_o_to_up
 
         # rotation matrix from origin to up_link
@@ -496,14 +501,20 @@ class SerialIKSolver:
 
         T_o_to_down = Translation('x', car_x) * Translation('y', car_y) * Translation('z', self._o_to_down_height) * Rotation('z', car_theta)
 
+        # rospy.loginfo("T_o_to_down is")
+        # print T_o_to_down
+        
         T_down_to_up = T_o_to_down.I * T_o_to_up
+
+        # rospy.loginfo("T_down_to_up is")
+        # print T_down_to_up
 
         trans_x = T_down_to_up[0, 3]
         trans_y = T_down_to_up[1, 3]
         trans_z = T_down_to_up[2, 3] - self._Z_OFFSET
 
-        rospy.loginfo("Optimal IK")
-        rospy.loginfo("Translation in x:{}, y:{}, z:{}".format(trans_x, trans_y, trans_z))
+        # rospy.loginfo("Optimal IK")
+        # print "Translation in x:{}, y:{}, z:{}".format(trans_x, trans_y, trans_z)
 
         # alpha, beta, gamma are all restricted to (-pi/2, pi/2), so sin(beta) can be used to calculate beta
         # alpha: rotation about x-axis
@@ -516,7 +527,7 @@ class SerialIKSolver:
         
         gamma = np.arctan2(-T_down_to_up[0, 1], T_down_to_up[0, 0])
 
-        rospy.loginfo("Rotation in alpha:{}, beta:{}, gamma:{}".format(alpha, beta, gamma))
+        # print "Rotation in alpha:{}, beta:{}, gamma:{}".format(alpha, beta, gamma)
 
         # parallel_pose_desired to specify the pose of the car
         parallel_pose_desired =  ParallelPose()

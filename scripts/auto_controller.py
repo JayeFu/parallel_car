@@ -32,6 +32,12 @@ if __name__ == "__main__":
 
         # control the pace
         raw_input()
+        if not listened_to_fixed:
+            if seri_ik.listen_to_fixed_tf():
+                rospy.loginfo("Have listend to fixed tf")
+                listened_to_fixed = True
+            else:
+                rospy.logerr("listening to fixed failed")
 
         (o_to_wx_succ, o_to_wx_tf) = seri_ik.get_transform(origin, "wx_link")
         if o_to_wx_succ:
@@ -42,8 +48,15 @@ if __name__ == "__main__":
             (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_modified_matrix(T_o_to_wx_modified)
             # need to revert optimal alpha for parallel pose
             parallel_pose_desired.alpha = -optimal_alpha
+            
+            rospy.loginfo("parallel_pose_desired: ")
+            print parallel_pose_desired
+
+            rospy.loginfo("serial_pose_desired: ")
+            print serial_pose_desired
+
             # go to desired pose by driver
-            driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
+            # driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
         else:
             rospy.logerr("listening to {}-wx_link transform failed.".format(origin))
 
