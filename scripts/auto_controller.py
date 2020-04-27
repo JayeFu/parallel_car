@@ -56,7 +56,7 @@ if __name__ == "__main__":
             print serial_pose_desired
 
             # go to desired pose by driver
-            # driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
+            driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
         else:
             rospy.logerr("listening to {}-wx_link transform failed.".format(origin))
 
