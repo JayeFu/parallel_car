@@ -68,6 +68,16 @@ class ParallelPose:
         return resStr
 
 
+class SerialPose:
+    def __init__(self, x=0.0, y=0.0, z=0.0, alpha=0.0, beta=0.0, gamma=0.0):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.alpha = alpha
+        self.beta = beta
+        self.gamma = gamma
+
+
 class ParallelIKSolver:
     """A parallel mechanism IK solver class for listening to tf msgs and calculating length of poles
 
@@ -457,8 +467,73 @@ class SerialIKSolver:
 
     def compute_ik_from_modified_matrix(self, T_o_to_wx_modified):
         
+        # fixed transformation matrix from up_link to wx_link
         T_up_to_wx = self._T_up_to_wx_no_alpha
 
+        # transformation matrix from origin to up_link
         T_o_to_up = T_o_to_wx_modified * T_up_to_wx.I
 
-        print T_o_to_up
+        # print T_o_to_up
+
+        # rotation matrix from origin to up_link
+        T_up_rot = np.mat(np.eye(4))
+        T_up_rot[0:3, 0:3] = T_o_to_up[0:3, 0:3]
+
+        # x-axis of up_link coordinate
+        i_standard = np.mat(np.array([1, 0, 0, 1]).reshape((-1, 1)))
+
+        # x-axis of up_link coordinate represented in global coordinate
+        i_global = T_up_rot * i_standard
+        i_global_x = i_global[0, 0]
+        i_global_y = i_global[1, 0]
+
+        car_theta = np.arctan2(i_global_y, i_global_x)
+
+        car_x = T_o_to_up[0, 3]
+        car_y = T_o_to_up[1, 3]
+
+        # rospy.loginfo("Car will be at x:{}, y:{}, theta:{}".format(car_x,car_y, car_theta))
+
+        T_o_to_down = Translation('x', car_x) * Translation('y', car_y) * Translation('z', self._o_to_down_height) * Rotation('z', car_theta)
+
+        T_down_to_up = T_o_to_down.I * T_o_to_up
+
+        trans_x = T_down_to_up[0, 3]
+        trans_y = T_down_to_up[1, 3]
+        trans_z = T_down_to_up[2, 3] - self._Z_OFFSET
+
+        rospy.loginfo("Optimal IK")
+        rospy.loginfo("Translation in x:{}, y:{}, z:{}".format(trans_x, trans_y, trans_z))
+
+        # alpha, beta, gamma are all restricted to (-pi/2, pi/2), so sin(beta) can be used to calculate beta
+        # alpha: rotation about x-axis
+        # beta:  rotation about y-axis
+        # gamma: rotation about z-axis
+
+        alpha = np.arctan2(-T_down_to_up[1, 2], T_down_to_up[2, 2])
+        
+        beta = np.arcsin(T_down_to_up[0, 2])
+        
+        gamma = np.arctan2(-T_down_to_up[0, 1], T_down_to_up[0, 0])
+
+        rospy.loginfo("Rotation in alpha:{}, beta:{}, gamma:{}".format(alpha, beta, gamma))
+
+        # parallel_pose_desired to specify the pose of the car
+        parallel_pose_desired =  ParallelPose()
+
+        parallel_pose_desired.x = car_x
+        parallel_pose_desired.y = car_y
+        parallel_pose_desired.theta = car_theta
+
+        # se
+        serial_pose_desired = SerialPose()
+
+        serial_pose_desired.x = trans_x
+        serial_pose_desired.y = trans_y
+        serial_pose_desired.z = trans_z
+
+        serial_pose_desired.alpha = alpha
+        serial_pose_desired.beta = beta
+        serial_pose_desired.gamma = gamma
+
+        return (parallel_pose_desired, serial_pose_desired)
