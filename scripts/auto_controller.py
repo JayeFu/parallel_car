@@ -56,7 +56,7 @@ if __name__ == "__main__":
     driver.init_pose()
 
     # send the trajectory point one by one
-    driver.send_trajectory_one_by_one()
+    # driver.send_trajectory_one_by_one()
 
     
     '''
