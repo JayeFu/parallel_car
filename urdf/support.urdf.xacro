@@ -45,7 +45,7 @@
         <parent link="world"/>
         <child link="supportX_link"/>
         <axis xyz="1.0 0.0 0.0"/>
-        <limit lower="-10.0" upper="10.0" effort="50.0" velocity="5.0"/>
+        <limit lower="-10.0" upper="10.0" effort="100.0" velocity="5.0"/>
     </joint>
 
     <joint name="supportX_to_supportY" type="prismatic">
@@ -53,7 +53,7 @@
         <parent link="supportX_link"/>
         <child link="supportY_link"/>
         <axis xyz="0.0 1.0 0.0"/>
-        <limit lower="-10.0" upper="10.0" effort="50.0" velocity="5.0"/>
+        <limit lower="-10.0" upper="10.0" effort="100.0" velocity="5.0"/>
     </joint>
 
     <joint name="supportY_to_car" type="continuous">
@@ -61,7 +61,7 @@
         <parent link="supportY_link"/>
         <child link="car_link"/>
         <axis xyz="0.0 0.0 1.0"/>
-        <limit lower="-10.0" upper="10.0" effort="50.0" velocity="2.0"/>
+        <limit lower="-10.0" upper="10.0" effort="100.0" velocity="2.0"/>
     </joint>
 
     <!-- joints end-->

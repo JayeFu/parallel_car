@@ -52,6 +52,12 @@ if __name__ == "__main__":
         # drive store both parallel pose and serial pose inside
         driver.append_pose_desired(parallel_pose_desired, serial_pose_desired)
 
+    # go to initial pose
+    driver.init_pose()
+
+    # send the trajectory point one by one
+    driver.send_trajectory_one_by_one()
+
     
     '''
     # manually give a tf

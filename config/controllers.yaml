@@ -15,18 +15,17 @@ parallel_car:
         - littleY_to_littleZ
         - addon_Tilt_to_wx
       constraints:
-        goal_time: 0.6
-        stopped_velocity_tolerance: 0.01
-        car_to_barX: {trajectory: 0.01, goal: 0.01}
-        barX_to_barY: {trajectory: 0.01, goal: 0.01}
-        barY_to_barZ: {trajectory: 0.01, goal: 0.01}
-        barZ_to_littleX: {trajectory: 0.01, goal: 0.01}
-        littleX_to_littleY: {trajectory: 0.01, goal: 0.01}
-        littleY_to_littleZ: {trajectory: 0.01, goal: 0.01}
-        addon_Tilt_to_wx: {trajectory: 0.01, goal: 0.01}
-      stop_trajectory_duration: 0.0
+        goal_time: &goal_time 0.6
+        stopped_velocity_tolerance: &stop_vel_tol 0.05
+        car_to_barX: {trajectory: &traj_tol 0.05, goal: &goal_tol 0.05}
+        barX_to_barY: {trajectory: *traj_tol, goal: *goal_tol}
+        barY_to_barZ: {trajectory: *traj_tol, goal: *goal_tol}
+        barZ_to_littleX: {trajectory: *traj_tol, goal: *goal_tol}
+        littleX_to_littleY: {trajectory: *traj_tol, goal: *goal_tol}
+        littleY_to_littleZ: {trajectory: *traj_tol, goal: *goal_tol}
+        addon_Tilt_to_wx: {trajectory: *traj_tol, goal: *goal_tol}
+      stop_trajectory_duration: &stop_traj_dur 0.2
       state_publish_rate:  50
-      action_monitor_rate: 20
 
     support_and_mech_controller:
       type: position_controllers/JointTrajectoryController
@@ -42,18 +41,17 @@ parallel_car:
         - littleY_to_littleZ
         - addon_Tilt_to_wx
       constraints:
-        goal_time: 0.6
-        stopped_velocity_tolerance: 0.01
-        world_to_supportX: {trajectory: 0.01, goal: 0.01}
-        supportX_to_supportY: {trajectory: 0.01, goal: 0.01}
-        supportY_to_car: {trajectory: 0.01, goal: 0.01}
-        car_to_barX: {trajectory: 0.01, goal: 0.01}
-        barX_to_barY: {trajectory: 0.01, goal: 0.01}
-        barY_to_barZ: {trajectory: 0.01, goal: 0.01}
-        barZ_to_littleX: {trajectory: 0.01, goal: 0.01}
-        littleX_to_littleY: {trajectory: 0.01, goal: 0.01}
-        littleY_to_littleZ: {trajectory: 0.01, goal: 0.01}
-        addon_Tilt_to_wx: {trajectory: 0.01, goal: 0.01}
-      stop_trajectory_duration: 0.0
+        goal_time: *goal_time
+        stopped_velocity_tolerance: *stop_vel_tol
+        world_to_supportX: {trajectory: *traj_tol, goal: *goal_tol}
+        supportX_to_supportY: {trajectory: *traj_tol, goal: *goal_tol}
+        supportY_to_car: {trajectory: *traj_tol, goal: *goal_tol}
+        car_to_barX: {trajectory: *traj_tol, goal: *goal_tol}
+        barX_to_barY: {trajectory: *traj_tol, goal: *goal_tol}
+        barY_to_barZ: {trajectory: *traj_tol, goal: *goal_tol}
+        barZ_to_littleX: {trajectory: *traj_tol, goal: *goal_tol}
+        littleX_to_littleY: {trajectory: *traj_tol, goal: *goal_tol}
+        littleY_to_littleZ: {trajectory: *traj_tol, goal: *goal_tol}
+        addon_Tilt_to_wx: {trajectory: *traj_tol, goal: *goal_tol}
+      stop_trajectory_duration: *stop_traj_dur
       state_publish_rate:  50
-      action_monitor_rate: 20
