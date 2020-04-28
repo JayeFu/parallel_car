@@ -11,7 +11,7 @@ from geometry_msgs.msg import Transform, Vector3, Quaternion
 # either 'rviz' or 'gazebo'
 RUN_ENV = 'gazebo'
 
-def manual_move():
+def go_to_gazebo_target():
     while not rospy.is_shutdown():
 
         try:
@@ -57,7 +57,40 @@ def auto_move():
     # send the trajectory point one by one
     # driver.send_trajectory_one_by_one()
 
+def go_to_specified_target():
+        
+    while not rospy.is_shutdown():
+    
+        # construct a tf from origin to wx_link manually
+        o_to_wx_tf = Transform()
 
+        # get the translation in string
+        vec3_str = raw_input("Give me translation in x, y, z order: ")
+
+        # map sting to list
+        vec3 = map(float,vec3_str.split())
+
+        o_to_wx_tf.translation = Vector3(vec3[0], vec3[1], vec3[2])
+
+        # get the rotation in string
+        quat_str = raw_input("Give me rotation in qx, qy, qz, qw order: ")
+
+        # map string to list
+        quat = map(float, quat_str.split())
+
+        o_to_wx_tf.rotation = Quaternion(quat[0], quat[1], quat[2], quat[3])
+        
+        # from o_to_wx_tf get disired parallel pose and serial pose
+        (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_o_to_wx_tf(o_to_wx_tf)
+
+        print "parallel_pose_desired"
+        print parallel_pose_desired
+
+        print "serial_pose_desired"
+        print serial_pose_desired
+        
+        # go to desired pose by driver
+        # driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
 
 if __name__ == "__main__":
     rospy.init_node("auto_controller")
@@ -84,6 +117,8 @@ if __name__ == "__main__":
             rospy.logerr("listening to fixed failed")
         rate.sleep()
     
-    manual_move()
+    go_to_gazebo_target()
+
+    # go_to_specified_target()
 
     # auto_move()

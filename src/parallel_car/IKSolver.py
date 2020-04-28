@@ -681,15 +681,19 @@ class SerialIKSolver:
         # rospy.loginfo("T_o_to_up is")
         # print T_o_to_up
 
-        # z-axis of wx_link coordinate
-        k_standard = np.mat(np.array([0, 0, 1, 1]).reshape((-1, 1)))
+        # rotation matrix from origin to up_link
+        T_up_rot = np.mat(np.eye(4))
+        T_up_rot[0:3, 0:3] = T_o_to_up[0:3, 0:3]
 
-        # z-axis of wx_link coordinate represented in global coordinate
-        k_global = T_wx_rot * k_standard
-        k_global_x = k_global[0, 0]
-        k_global_y = k_global[1, 0]
+        # x-axis of up_link coordinate
+        i_standard = np.mat(np.array([1, 0, 0, 1]).reshape((-1, 1)))
 
-        car_theta = np.arctan2(k_global_y, k_global_x)
+        # x-axis of up_link coordinate represented in global coordinate
+        i_global = T_up_rot * i_standard
+        i_global_x = i_global[0, 0]
+        i_global_y = i_global[1, 0]
+
+        car_theta = np.arctan2(i_global_y, i_global_x)
 
         car_x = T_o_to_up[0, 3]
         car_y = T_o_to_up[1, 3]
