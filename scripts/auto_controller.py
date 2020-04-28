@@ -37,6 +37,26 @@ def manual_move():
         # go to desired pose by driver
         driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
 
+def auto_move():
+
+    driver.read_trajectory()
+
+    o_to_wx_tf_list = driver.get_o_to_wx_tf_list()
+
+    for tf_idx in range(len(o_to_wx_tf_list)):
+        # get a tf from o_to_wx_tf_list
+        o_to_wx_tf = o_to_wx_tf_list[tf_idx]
+        # compute the parallel pose and serial pose from modified matrix
+        (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_o_to_wx_tf(o_to_wx_tf)
+        # drive store both parallel pose and serial pose inside
+        driver.append_pose_desired(parallel_pose_desired, serial_pose_desired)
+
+    # go to initial pose
+    driver.init_pose()
+
+    # send the trajectory point one by one
+    # driver.send_trajectory_one_by_one()
+
 
 
 if __name__ == "__main__":
@@ -66,27 +86,4 @@ if __name__ == "__main__":
     
     manual_move()
 
-    '''
-    driver.read_trajectory()
-
-    o_to_wx_tf_list = driver.get_o_to_wx_tf_list()
-
-    for tf_idx in range(len(o_to_wx_tf_list)):
-        # get a tf from o_to_wx_tf_list
-        o_to_wx_tf = o_to_wx_tf_list[tf_idx]
-        # compute optimal alpha and modified homogeneous transformation matrix which neutralizes the optimal alpha
-        (optimal_alpha, T_o_to_wx_modified) = optimizer.compute_optimal_alpha(o_to_wx_tf)
-        # compute the parallel pose and serial pose from modified matrix
-        (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_modified_matrix(T_o_to_wx_modified)
-        # need to revert optimal alpha for parallel pose
-        parallel_pose_desired.alpha = -optimal_alpha
-        # drive store both parallel pose and serial pose inside
-        driver.append_pose_desired(parallel_pose_desired, serial_pose_desired)
-
-    # go to initial pose
-    driver.init_pose()
-
-    # send the trajectory point one by one
-    # driver.send_trajectory_one_by_one()
-
-    '''
+    # auto_move()

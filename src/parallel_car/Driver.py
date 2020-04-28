@@ -185,9 +185,6 @@ class BaseAndMechDriver:
         trajPt.positions.append(first_serial_pose.beta)
         trajPt.positions.append(first_serial_pose.gamma)
 
-        # for rotation of wx about z-axis
-        trajPt.positions.append(first_parallel_pose.alpha)
-
         for idx in range(len(self._joint_names)):
             trajPt.velocities.append(0.0)
 
