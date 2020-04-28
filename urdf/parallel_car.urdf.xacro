@@ -137,7 +137,7 @@
         </visual>
     </link>
 
-    <link name="wx_link">
+    <link name="wx_visual_link">
         <inertial>
             <origin xyz="0.03 0.0 0.23" rpy="0.0 0.0 0.0"/>
             <mass value="${wx_mass}"/>
@@ -156,6 +156,20 @@
                 <mesh filename="package://parallel_car/meshes/MZ.STL" />
             </geometry>
         </collision>
+    </link>
+
+    <link name="wx_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+        </visual>
     </link>
 
     <!-- up and down links -->
@@ -270,9 +284,15 @@
         <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="50.0" velocity="2.0"/>
     </joint>
 
-    <joint name="addon_Vertical_to_wx" type="fixed">
+    <joint name="addon_Vertical_to_wx_visual" type="fixed">
         <origin xyz="0.0 0.0 ${addon_length}" rpy="0.0 0.0 0.0"/>
         <parent link="addon_Vertical_link"/>
+        <child link="wx_visual_link"/>
+    </joint>
+
+    <joint name="wx_visual_to_wx" type="fixed">
+        <origin xyz="0.03 0.0 0.23" rpy="0.0 ${PI/4.0} 0.0"/>
+        <parent link="wx_visual_link"/>
         <child link="wx_link"/>
     </joint>
 

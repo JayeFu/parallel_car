@@ -26,6 +26,6 @@
     args="-urdf -model parallel_car -param robot_description"/>
 
   <!-- ros_control parallel_car launch file -->
-  <!--include file="$(find parallel_car)/launch/parallel_car_control.launch" /-->
+  <include file="$(find parallel_car)/launch/parallel_car_control.launch" />
 
 </launch>

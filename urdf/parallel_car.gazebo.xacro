@@ -33,10 +33,6 @@
     <gazebo reference="addon_Vertical_link">
         <material>Gazebo/Purple</material>
     </gazebo>
-
-    <gazebo reference="addon_Tilt_link">
-        <material>Gazebo/Purple</material>
-    </gazebo>
     
     <!-- ros_control plugin -->
     <gazebo>

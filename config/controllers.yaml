@@ -13,7 +13,6 @@ parallel_car:
         - barZ_to_littleX
         - littleX_to_littleY
         - littleY_to_littleZ
-        - addon_Tilt_to_wx
       constraints:
         goal_time: &goal_time 0.6
         stopped_velocity_tolerance: &stop_vel_tol 0.05
@@ -23,7 +22,6 @@ parallel_car:
         barZ_to_littleX: {trajectory: *traj_tol, goal: *goal_tol}
         littleX_to_littleY: {trajectory: *traj_tol, goal: *goal_tol}
         littleY_to_littleZ: {trajectory: *traj_tol, goal: *goal_tol}
-        addon_Tilt_to_wx: {trajectory: *traj_tol, goal: *goal_tol}
       stop_trajectory_duration: &stop_traj_dur 0.2
       state_publish_rate:  50
 
@@ -39,7 +37,6 @@ parallel_car:
         - barZ_to_littleX
         - littleX_to_littleY
         - littleY_to_littleZ
-        - addon_Tilt_to_wx
       constraints:
         goal_time: *goal_time
         stopped_velocity_tolerance: *stop_vel_tol
@@ -52,6 +49,5 @@ parallel_car:
         barZ_to_littleX: {trajectory: *traj_tol, goal: *goal_tol}
         littleX_to_littleY: {trajectory: *traj_tol, goal: *goal_tol}
         littleY_to_littleZ: {trajectory: *traj_tol, goal: *goal_tol}
-        addon_Tilt_to_wx: {trajectory: *traj_tol, goal: *goal_tol}
       stop_trajectory_duration: *stop_traj_dur
       state_publish_rate:  50
