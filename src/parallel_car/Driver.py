@@ -27,8 +27,7 @@ class BaseAndMechDriver:
 
         self._joint_names = ['world_to_supportX', 'supportX_to_supportY', 'supportY_to_car', # for movement of base
          'car_to_barX', 'barX_to_barY', 'barY_to_barZ', # for translation of mech
-         'barZ_to_littleX', 'littleX_to_littleY', 'littleY_to_littleZ', # for rotation of mech
-         'addon_Tilt_to_wx'] # for rotation of wx about z-axis
+         'barZ_to_littleX', 'littleX_to_littleY', 'littleY_to_littleZ'] # for rotation of mech
 
         # path to the file containing mbx end effector trajectory
         self._file_path = file_path
@@ -122,9 +121,6 @@ class BaseAndMechDriver:
         trajPt.positions.append(serial_pose_desired.alpha)
         trajPt.positions.append(serial_pose_desired.beta)
         trajPt.positions.append(serial_pose_desired.gamma)
-
-        # for rotation of wx about z-axis
-        trajPt.positions.append(parallel_pose_desired.alpha)
 
         for idx in range(len(self._joint_names)):
             trajPt.velocities.append(0.0)

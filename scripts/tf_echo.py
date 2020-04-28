@@ -41,4 +41,8 @@ if __name__ == "__main__":
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             rospy.logerr("Failed to lookup transform from {} to {}".format(source_link, target_link))
         
-        rate.sleep()
+        try:
+            rate.sleep()
+        except rospy.ROSInterruptException:
+            print "Manual shut down"
+            break

@@ -1,5 +1,7 @@
 #!/usr/bin/env python  
 
+import sys
+
 import rospy
 from parallel_car.Optimizer import SimpleOptimizer
 from parallel_car.IKSolver import SerialIKSolver
@@ -9,12 +11,38 @@ from geometry_msgs.msg import Transform, Vector3, Quaternion
 # either 'rviz' or 'gazebo'
 RUN_ENV = 'gazebo'
 
+def manual_move():
+    while not rospy.is_shutdown():
+
+        try:
+            # uncomment raw_input if you want to control the pace of sending goals
+            raw_input()
+        except EOFError:
+            print "Manual Ending"
+            sys.exit()
+        
+        # get the transform from origin to wx_link
+        (o_to_wx_succ, o_to_wx_tf) = seri_ik.get_transform(origin, "wx_link")
+
+        if o_to_wx_succ:
+            # from o_to_wx_tf get disired parallel pose and serial pose
+            (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_o_to_wx_tf(o_to_wx_tf)
+
+            print "parallel_pose_desired"
+            print parallel_pose_desired
+
+            print "serial_pose_desired"
+            print serial_pose_desired
+        
+        # go to desired pose by driver
+        driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
+
+
+
 if __name__ == "__main__":
     rospy.init_node("auto_controller")
 
     seri_ik = SerialIKSolver(run_env=RUN_ENV)
-
-    optimizer = SimpleOptimizer()
 
     driver = BaseAndMechDriver()
 
@@ -35,7 +63,10 @@ if __name__ == "__main__":
         else:
             rospy.logerr("listening to fixed failed")
         rate.sleep()
+    
+    manual_move()
 
+    '''
     driver.read_trajectory()
 
     o_to_wx_tf_list = driver.get_o_to_wx_tf_list()
@@ -58,22 +89,4 @@ if __name__ == "__main__":
     # send the trajectory point one by one
     # driver.send_trajectory_one_by_one()
 
-    
-    '''
-    # manually give a tf
-
-    o_to_wx_tf = Transform()
-
-    o_to_wx_tf.translation = Vector3(1.57822624983, 0.105762480478, 1.36)
-
-    o_to_wx_tf.rotation = Quaternion(-0.662418020787, 0.246229618558, -0.282773315579, 0.648546523141)
-
-    (optimal_alpha, T_o_to_wx_modified) = optimizer.compute_optimal_alpha(o_to_wx_tf)
-    # from T_o_to_wx_modified get disired parallel pose and serial pose
-    (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_modified_matrix(T_o_to_wx_modified)
-    # need to revert optimal alpha for parallel pose
-    parallel_pose_desired.alpha = -optimal_alpha
-
-    # go to desired pose by driver
-    # driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
     '''

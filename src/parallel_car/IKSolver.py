@@ -390,7 +390,7 @@ class SerialIKSolver:
 
         self._Z_OFFSET = 1.075 # default to 1.075, will be changed in listen_to_fixed_tf
 
-        self._T_up_to_wx_no_alpha = Translation('z', ADDON_LENGTH) * Rotation('y', np.pi/4.0) * Translation('z', ADDON_LENGTH)
+        self._T_up_to_wx_no_alpha = Translation('x', 0.03) * Translation('z', 0.73) * Rotation('y', np.pi/4.0)
 
         if run_env=='rviz':
             self._o_to_down_height = CAR_HEIGHT/2.0
@@ -603,6 +603,93 @@ class SerialIKSolver:
         i_global_y = i_global[1, 0]
 
         car_theta = np.arctan2(i_global_y, i_global_x)
+
+        car_x = T_o_to_up[0, 3]
+        car_y = T_o_to_up[1, 3]
+
+        # rospy.loginfo("Car will be at x:{}, y:{}, theta:{}".format(car_x,car_y, car_theta))
+
+        T_o_to_down = Translation('x', car_x) * Translation('y', car_y) * Translation('z', self._o_to_down_height) * Rotation('z', car_theta)
+
+        # rospy.loginfo("T_o_to_down is")
+        # print T_o_to_down
+        
+        T_down_to_up = T_o_to_down.I * T_o_to_up
+
+        # rospy.loginfo("T_down_to_up is")
+        # print T_down_to_up
+
+        trans_x = T_down_to_up[0, 3]
+        trans_y = T_down_to_up[1, 3]
+        trans_z = T_down_to_up[2, 3] - self._Z_OFFSET
+
+        # rospy.loginfo("Optimal IK")
+        # print "Translation in x:{}, y:{}, z:{}".format(trans_x, trans_y, trans_z)
+
+        # alpha, beta, gamma are all restricted to (-pi/2, pi/2), so sin(beta) can be used to calculate beta
+        # alpha: rotation about x-axis
+        # beta:  rotation about y-axis
+        # gamma: rotation about z-axis
+
+        alpha = np.arctan2(-T_down_to_up[1, 2], T_down_to_up[2, 2])
+        
+        beta = np.arcsin(T_down_to_up[0, 2])
+        
+        gamma = np.arctan2(-T_down_to_up[0, 1], T_down_to_up[0, 0])
+
+        # print "Rotation in alpha:{}, beta:{}, gamma:{}".format(alpha, beta, gamma)
+
+        # parallel_pose_desired to specify the pose of the car
+        parallel_pose_desired =  ParallelPose()
+
+        parallel_pose_desired.x = car_x
+        parallel_pose_desired.y = car_y
+        parallel_pose_desired.theta = car_theta
+
+        # serial_pose_desired to specify the motion of three prismatic joints and three revolute joints
+        serial_pose_desired = SerialPose()
+
+        serial_pose_desired.x = trans_x
+        serial_pose_desired.y = trans_y
+        serial_pose_desired.z = trans_z
+
+        serial_pose_desired.alpha = alpha
+        serial_pose_desired.beta = beta
+        serial_pose_desired.gamma = gamma
+
+        return (parallel_pose_desired, serial_pose_desired)
+
+    def compute_ik_from_o_to_wx_tf(self, o_to_wx_tf):
+
+        # although Point-type msg can also be used, however, for clarity, first CONVERT to Vector3-type msg
+        T_wx_trans = vector3_to_translation_matrix(o_to_wx_tf.translation)
+        T_wx_rot = quaternion_to_rotation_matrix(o_to_wx_tf.rotation)
+
+        # multiply translation matrix first
+        T_o_to_wx = T_wx_trans*T_wx_rot
+
+        
+        # rospy.loginfo("T_o_to_wx is")
+        # print T_o_to_wx
+
+        # fixed transformation matrix from up_link to wx_link
+        T_up_to_wx = self._T_up_to_wx_no_alpha
+
+        # transformation matrix from origin to up_link
+        T_o_to_up = T_o_to_wx * T_up_to_wx.I
+
+        # rospy.loginfo("T_o_to_up is")
+        # print T_o_to_up
+
+        # z-axis of wx_link coordinate
+        k_standard = np.mat(np.array([0, 0, 1, 1]).reshape((-1, 1)))
+
+        # z-axis of wx_link coordinate represented in global coordinate
+        k_global = T_wx_rot * k_standard
+        k_global_x = k_global[0, 0]
+        k_global_y = k_global[1, 0]
+
+        car_theta = np.arctan2(k_global_y, k_global_x)
 
         car_x = T_o_to_up[0, 3]
         car_y = T_o_to_up[1, 3]
