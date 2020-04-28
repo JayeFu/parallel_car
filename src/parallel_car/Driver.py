@@ -19,6 +19,7 @@ class BaseAndMechDriver:
         """Construction function for class BaseAndMechDriver
 
         Keyword Arguments:
+            file_path {str} -- path to the file containing mbx end effector trajectory (default: {'../data/mbx_planned_trajectory.txt'})
             action_ns {str} -- action namespace (default: {'/parallel_car/support_and_mech_controller/follow_joint_trajectory'})
         """
 
@@ -27,11 +28,20 @@ class BaseAndMechDriver:
          'barZ_to_littleX', 'littleX_to_littleY', 'littleY_to_littleZ', # for rotation of mech
          'addon_Tilt_to_wx'] # for rotation of wx about z-axis
 
+        # path to the file containing mbx end effector trajectory
+        self._file_path = file_path
+        
         # a list containing the time series
         self._time_list = list()
         
         # a list to contain the target tf from origin to wx_link
         self._o_to_wx_tf_list = list()
+
+        # a list to contain the parallel pose for the base and wx respective to addon_Tilt_link
+        self._parallel_pose_desired_list = list()
+
+        # a list to contain the serial pose for mechanism onboard
+        self._serial_pose_desired_list = list()
 
         # action client
         self._action_client = actionlib.SimpleActionClient(action_ns, FollowJointTrajectoryAction)
@@ -59,6 +69,15 @@ class BaseAndMechDriver:
                 o_to_wx_tf.rotation = Quaternion(time_slice[4], time_slice[5], time_slice[6], time_slice[7])
 
                 self._o_to_wx_tf_list.append(o_to_wx_tf)
+
+    def get_o_to_wx_tf_list(self):
+        return self._o_to_wx_tf_list
+
+    def append_pose_desired(self, parallel_pose_desired, serial_pose_desired):
+        
+        self._parallel_pose_desired_list.append(parallel_pose_desired)
+
+        self._serial_pose_desired_list.append(serial_pose_desired)
 
     def send_trajectory_from_controller(self, parallel_pose_desired, serial_pose_desired):
         """A function used to control drive base and mechanism to specified pose
