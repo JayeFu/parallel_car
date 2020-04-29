@@ -12,7 +12,6 @@ from parallel_car.TransRotGen import Rotation, Translation, quaternion_to_rotati
 import numpy as np
 
 CAR_HEIGHT = 0.36
-BAR_LENGTH = 1.0
 ADDON_LENGTH = 0.5
 
 class ParallelPose:
@@ -388,9 +387,9 @@ class SerialIKSolver:
         # to contain the rotation of barZ_to_littleX, littleX_to_littleY, littleY_to_littleZ
         self._T_down_to_up_rot = np.mat(np.eye(4))
 
-        self._Z_OFFSET = 1.075 # default to 1.075, will be changed in listen_to_fixed_tf
+        self._Z_OFFSET = 0.575 # default to 0.575, will be changed in listen_to_fixed_tf
 
-        self._T_up_to_wx_no_alpha = Translation('x', 0.03) * Translation('z', 0.73) * Rotation('y', np.pi/4.0) * Rotation('z', -np.pi/2.0)
+        self._T_up_to_wx_no_alpha = Translation('x', 0.03) * Translation('z', 0.63) * Rotation('y', np.pi/4.0) * Rotation('z', -np.pi/2.0)
 
         # print "In Construction"
         # print self._T_up_to_wx_no_alpha

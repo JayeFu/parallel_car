@@ -12,7 +12,7 @@
     <xacro:property name="car_offset" value="0.23"/>
     <xacro:property name="wx_mass" value="5.0"/>
     <xacro:property name="PI" value="3.1415926536"/>
-    <xacro:property name="bar_length" value="1.0"/>
+    <xacro:property name="bar_length" value="0.5"/>
     <xacro:property name="bar_width" value="0.05"/>
     <xacro:property name="little_width" value="0.001"/>
     <xacro:property name="wx_length" value="0.55"/>
@@ -21,7 +21,7 @@
     <xacro:property name="up_radius" value="0.1"/>
     <xacro:property name="up_height" value="0.05"/>
     <xacro:property name="little_mass" value="0.01"/>
-    <xacro:property name="addon_length" value="0.5"/>
+    <xacro:property name="addon_length" value="0.4"/>
     <xacro:property name="addon_width" value="0.01"/>
     <xacro:property name="car_height" value="0.36"/>
 
