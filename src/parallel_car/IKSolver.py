@@ -390,7 +390,10 @@ class SerialIKSolver:
 
         self._Z_OFFSET = 1.075 # default to 1.075, will be changed in listen_to_fixed_tf
 
-        self._T_up_to_wx_no_alpha = Translation('x', 0.03) * Translation('z', 0.73) * Rotation('y', np.pi/4.0)
+        self._T_up_to_wx_no_alpha = Translation('x', 0.03) * Translation('z', 0.73) * Rotation('y', np.pi/4.0) * Rotation('z', -np.pi/2.0)
+
+        # print "In Construction"
+        # print self._T_up_to_wx_no_alpha
 
         if run_env=='rviz':
             self._o_to_down_height = CAR_HEIGHT/2.0
@@ -423,6 +426,9 @@ class SerialIKSolver:
         T_up_to_wx_no_alpha_trans = vector3_to_translation_matrix(transform_stamped.transform.translation)
         T_up_to_wx_no_alpha_rot = quaternion_to_rotation_matrix(transform_stamped.transform.rotation)
         self._T_up_to_wx_no_alpha = T_up_to_wx_no_alpha_trans*T_up_to_wx_no_alpha_rot
+
+        # print "In Calibration"
+        # print self._T_up_to_wx_no_alpha
 
         return True
 
