@@ -161,7 +161,7 @@ if __name__ == "__main__":
 
     seri_ik = SerialIKSolver(run_env=RUN_ENV)
 
-    mbx_file_path = "../data/mbx_planned_trajectory_no_n.txt"
+    mbx_file_path = "../data/mbx_planned_trajectory.txt"
 
     driver = BaseAndMechDriver(file_path=mbx_file_path)
 
@@ -189,6 +189,6 @@ if __name__ == "__main__":
 
     # go_to_specified_line_in_file()
 
-    auto_move_one_by_one()
+    # auto_move_one_by_one()
 
-    # auto_move()
+    auto_move()
