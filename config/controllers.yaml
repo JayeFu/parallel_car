@@ -16,7 +16,7 @@ parallel_car:
       constraints:
         goal_time: &goal_time 0.6
         stopped_velocity_tolerance: &stop_vel_tol 0.05
-        car_to_barX: {trajectory: &traj_tol 0.05, goal: &goal_tol 0.05}
+        car_to_barX: {trajectory: &traj_tol 0.02, goal: &goal_tol 0.02}
         barX_to_barY: {trajectory: *traj_tol, goal: *goal_tol}
         barY_to_barZ: {trajectory: *traj_tol, goal: *goal_tol}
         barZ_to_littleX: {trajectory: *traj_tol, goal: *goal_tol}

@@ -27,12 +27,6 @@ def go_to_gazebo_target():
         if o_to_wx_succ:
             # from o_to_wx_tf get disired parallel pose and serial pose
             (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_o_to_wx_tf(o_to_wx_tf)
-
-            print "parallel_pose_desired"
-            print parallel_pose_desired
-
-            print "serial_pose_desired"
-            print serial_pose_desired
         
         # go to desired pose by driver
         driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
@@ -90,7 +84,40 @@ def go_to_specified_target():
         print serial_pose_desired
         
         # go to desired pose by driver
-        # driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
+        driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
+
+def go_to_specified_line_in_file():
+
+    driver.read_trajectory()
+
+    o_to_wx_tf_list = driver.get_o_to_wx_tf_list()
+        
+    while not rospy.is_shutdown():
+
+        try:
+            # get the line number in string
+            line_str = raw_input("Line: ")
+        except EOFError:
+            print "Manual ending"
+            break
+
+        # transfer string into int
+        line_num = int(line_str)
+    
+        # construct a tf from origin to wx_link manually
+        o_to_wx_tf = o_to_wx_tf_list[line_num-1]
+        
+        # from o_to_wx_tf get disired parallel pose and serial pose
+        (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_o_to_wx_tf(o_to_wx_tf)
+
+        print "parallel_pose_desired"
+        print parallel_pose_desired
+
+        print "serial_pose_desired"
+        print serial_pose_desired
+        
+        # go to desired pose by driver
+        driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
 
 if __name__ == "__main__":
     rospy.init_node("auto_controller")
@@ -117,8 +144,10 @@ if __name__ == "__main__":
             rospy.logerr("listening to fixed failed")
         rate.sleep()
     
-    go_to_gazebo_target()
+    # go_to_gazebo_target()
 
     # go_to_specified_target()
+
+    go_to_specified_line_in_file()
 
     # auto_move()
