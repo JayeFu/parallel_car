@@ -106,9 +106,10 @@ def go_to_specified_line_in_file():
         line_num = int(line_str)
     
         # construct a tf from origin to wx_link manually
-        o_to_wx_tf = o_to_wx_tf_list[line_num-1]
+        o_to_wx_tf = o_to_wx_tf_list[line_num-2]
 
         # print o_to_wx_tf target
+        print "From File"
         print_tf(origin, 'wx_link', o_to_wx_tf)
         
         # from o_to_wx_tf get disired parallel pose and serial pose
@@ -121,6 +122,7 @@ def go_to_specified_line_in_file():
         (o_to_wx_succ, o_to_wx_tf_fact) = seri_ik.get_transform(origin, "wx_link")
 
         if o_to_wx_succ:
+            print "In Fact"
             print_tf(origin, 'wx_link', o_to_wx_tf_fact)
 
 if __name__ == "__main__":
