@@ -75,6 +75,10 @@ def go_to_specified_target():
 
         o_to_wx_tf.rotation = Quaternion(quat[0], quat[1], quat[2], quat[3])
         
+        # print o_to_wx_tf target
+        print "From command line"
+        print_tf(origin, 'wx_link', o_to_wx_tf)
+        
         # from o_to_wx_tf get disired parallel pose and serial pose
         (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_o_to_wx_tf(o_to_wx_tf)
 
@@ -86,6 +90,13 @@ def go_to_specified_target():
         
         # go to desired pose by driver
         driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
+
+        # get the transform from origin to wx_link to see whether wx has gone to target pose
+        (o_to_wx_succ, o_to_wx_tf_fact) = seri_ik.get_transform(origin, "wx_link")
+
+        if o_to_wx_succ:
+            print "In Fact"
+            print_tf(origin, 'wx_link', o_to_wx_tf_fact)
 
 def go_to_specified_line_in_file():
 
@@ -154,8 +165,8 @@ if __name__ == "__main__":
     
     # go_to_gazebo_target()
 
-    # go_to_specified_target()
+    go_to_specified_target()
 
-    go_to_specified_line_in_file()
+    # go_to_specified_line_in_file()
 
     # auto_move()

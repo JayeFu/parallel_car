@@ -91,11 +91,11 @@ class BaseAndMechDriver:
         parallel_pose_desired.little_to_zero()
         serial_pose_desired.little_to_zero()
         
-        # rospy.loginfo("parallel_pose_desired: ")
-        # print parallel_pose_desired
+        rospy.loginfo("parallel_pose_desired: ")
+        print parallel_pose_desired
 
-        # rospy.loginfo("serial_pose_desired: ")
-        # print serial_pose_desired
+        rospy.loginfo("serial_pose_desired: ")
+        print serial_pose_desired
         
         rospy.loginfo("Start going to the point specified by controller")
 
