@@ -53,7 +53,7 @@ def auto_move_one_by_one():
     driver.send_trajectory_one_by_one()
 
 def auto_move():
-    
+
     driver.read_trajectory()
 
     o_to_wx_tf_list = driver.get_o_to_wx_tf_list()
