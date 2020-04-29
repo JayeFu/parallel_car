@@ -200,7 +200,7 @@ class BaseAndMechDriver:
         self._action_client.send_goal(goal)
 
         # wait for the result
-        rospy.loginfo("Start waiting for go to the first pose")
+        rospy.loginfo("Waiting for go to the first pose")
         self._action_client.wait_for_result()
         rospy.loginfo("Waiting ends")
 

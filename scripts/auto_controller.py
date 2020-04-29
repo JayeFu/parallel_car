@@ -6,6 +6,7 @@ import rospy
 from parallel_car.Optimizer import SimpleOptimizer
 from parallel_car.IKSolver import SerialIKSolver
 from parallel_car.Driver import BaseAndMechDriver
+from parallel_car.PrintFunc import print_tf
 from geometry_msgs.msg import Transform, Vector3, Quaternion
 
 # either 'rviz' or 'gazebo'
@@ -106,25 +107,30 @@ def go_to_specified_line_in_file():
     
         # construct a tf from origin to wx_link manually
         o_to_wx_tf = o_to_wx_tf_list[line_num-1]
+
+        # print o_to_wx_tf target
+        print_tf(origin, 'wx_link', o_to_wx_tf)
         
         # from o_to_wx_tf get disired parallel pose and serial pose
         (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_o_to_wx_tf(o_to_wx_tf)
-
-        print "parallel_pose_desired"
-        print parallel_pose_desired
-
-        print "serial_pose_desired"
-        print serial_pose_desired
         
         # go to desired pose by driver
         driver.send_trajectory_from_controller(parallel_pose_desired, serial_pose_desired)
+
+        # get the transform from origin to wx_link to see whether wx has gone to target pose
+        (o_to_wx_succ, o_to_wx_tf_fact) = seri_ik.get_transform(origin, "wx_link")
+
+        if o_to_wx_succ:
+            print_tf(origin, 'wx_link', o_to_wx_tf_fact)
 
 if __name__ == "__main__":
     rospy.init_node("auto_controller")
 
     seri_ik = SerialIKSolver(run_env=RUN_ENV)
 
-    driver = BaseAndMechDriver()
+    mbx_file_path = "../data/mbx_planned_trajectory_no_n.txt"
+
+    driver = BaseAndMechDriver(file_path=mbx_file_path)
 
     listened_to_fixed = False
 
