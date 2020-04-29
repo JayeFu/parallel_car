@@ -50,7 +50,7 @@ def auto_move():
     driver.init_pose()
 
     # send the trajectory point one by one
-    # driver.send_trajectory_one_by_one()
+    driver.send_trajectory_one_by_one()
 
 def go_to_specified_target():
         
@@ -167,6 +167,6 @@ if __name__ == "__main__":
 
     # go_to_specified_target()
 
-    go_to_specified_line_in_file()
+    # go_to_specified_line_in_file()
 
-    # auto_move()
+    auto_move()
