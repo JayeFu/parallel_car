@@ -284,3 +284,75 @@ class BaseAndMechDriver:
                 print "Manual ending"
                 break
             '''
+
+    def send_trajectory(self):
+        
+
+        # construct a goal
+        goal = FollowJointTrajectoryGoal()
+
+        # add joint names
+        goal.trajectory.joint_names = self._joint_names
+        
+        
+        for traj_idx in range(len(self._time_list)-1): # have gone the the first pose so minus one, traj_idx from 0 to len(self._time_list)-1
+            
+            
+            parallel_pose_desired = self._parallel_pose_desired_list[traj_idx+1]
+            serial_pose_desired = self._serial_pose_desired_list[traj_idx+1]
+            
+            parallel_pose_desired.little_to_zero()
+            serial_pose_desired.little_to_zero()
+        
+            rospy.loginfo("At trajectory point {}".format(traj_idx))
+            
+            print "parallel_pose_desired: "
+            print parallel_pose_desired
+
+            print "serial_pose_desired: "
+            print serial_pose_desired
+
+            # a joint point in the trajectory
+            trajPt = JointTrajectoryPoint()
+
+            # for movement of base
+            trajPt.positions.append(parallel_pose_desired.x)
+            trajPt.positions.append(parallel_pose_desired.y)
+            trajPt.positions.append(parallel_pose_desired.theta)
+
+            # for translation of mech
+            trajPt.positions.append(serial_pose_desired.x)
+            trajPt.positions.append(serial_pose_desired.y)
+            trajPt.positions.append(serial_pose_desired.z)
+
+            # for rotation of mech
+            trajPt.positions.append(serial_pose_desired.alpha)
+            trajPt.positions.append(serial_pose_desired.beta)
+            trajPt.positions.append(serial_pose_desired.gamma)
+
+            for idx in range(len(self._joint_names)):
+                trajPt.velocities.append(0.0)
+
+            # time to go to specified pose
+            time_interval = self._time_list[traj_idx+1] - self._time_list[traj_idx]
+
+            # time to reach the joint trajectory point specified to 1.0
+            trajPt.time_from_start = rospy.Duration(secs=self._time_list[traj_idx+1])
+            # add the joint trajectory point to the goal
+            goal.trajectory.points.append(trajPt)
+
+        # go to goal ASAP
+        goal.trajectory.header.stamp = rospy.Time.now()
+
+        print "This goal has {} points to go".format(len(goal.trajectory.points))
+
+        # send the goal to the action server
+        self._action_client.send_goal(goal)
+
+        # wait for the result
+        rospy.loginfo("Start waiting for go to the resting poses")
+        self._action_client.wait_for_result()
+        rospy.loginfo("Waiting ends")
+
+        # show the error code
+        rospy.loginfo(self._action_client.get_result())
