@@ -165,8 +165,8 @@ if __name__ == "__main__":
     
     # go_to_gazebo_target()
 
-    go_to_specified_target()
+    # go_to_specified_target()
 
-    # go_to_specified_line_in_file()
+    go_to_specified_line_in_file()
 
     # auto_move()
