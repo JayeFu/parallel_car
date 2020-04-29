@@ -66,8 +66,8 @@ class BaseAndMechDriver:
                 # index 1, 2, 3 are x, y, z
                 o_to_wx_tf.translation = Vector3(time_slice[1], time_slice[2], time_slice[3])
 
-                # index 4, 5, 6, 7 are qx, qy, qz, qw
-                o_to_wx_tf.rotation = Quaternion(time_slice[4], time_slice[5], time_slice[6], time_slice[7])
+                # index 4, 5, 6, 7 are qw, qx, qy, qz
+                o_to_wx_tf.rotation = Quaternion(time_slice[5], time_slice[6], time_slice[7], time_slice[4])
 
                 self._o_to_wx_tf_list.append(o_to_wx_tf)
 

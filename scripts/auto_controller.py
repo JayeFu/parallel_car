@@ -189,6 +189,6 @@ if __name__ == "__main__":
 
     # go_to_specified_line_in_file()
 
-    # auto_move_one_by_one()
+    auto_move_one_by_one()
 
-    auto_move()
+    # auto_move()
