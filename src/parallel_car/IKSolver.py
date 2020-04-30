@@ -387,7 +387,7 @@ class SerialIKSolver:
         # to contain the rotation of barZ_to_littleX, littleX_to_littleY, littleY_to_littleZ
         self._T_down_to_up_rot = np.mat(np.eye(4))
 
-        self._Z_OFFSET = 0.575 # default to 0.575, will be changed in listen_to_fixed_tf
+        self._Z_OFFSET = 0.475 # default to 0.475, will be changed in listen_to_fixed_tf
 
         self._T_up_to_wx_no_alpha = Translation('x', 0.03) * Translation('z', 0.63) * Rotation('y', np.pi/4.0) * Rotation('z', -np.pi/2.0)
 
@@ -414,7 +414,7 @@ class SerialIKSolver:
             return False
         self._Z_OFFSET = transform_stamped.transform.translation.z
 
-        # rospy.loginfo("z-axis offset is {}".format(self._Z_OFFSET))
+        rospy.loginfo("z-axis offset is {}".format(self._Z_OFFSET))
 
         # get original transform from up_link to wx_link
         try:
