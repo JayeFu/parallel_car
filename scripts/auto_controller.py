@@ -49,6 +49,8 @@ def auto_move_one_by_one():
     # go to initial pose
     driver.init_pose()
 
+    raw_input("Enter to go to resting poses")
+
     # send the trajectory point one by one
     driver.send_trajectory_one_by_one()
 
@@ -163,7 +165,7 @@ if __name__ == "__main__":
 
     seri_ik = SerialIKSolver(run_env=RUN_ENV)
 
-    mbx_file_path = "../data/mbx_planned_trajectory_nutation.txt"
+    mbx_file_path = "../data/mbx_planned_trajectory_hou.txt"
 
     driver = BaseAndMechDriver(file_path=mbx_file_path)
 
