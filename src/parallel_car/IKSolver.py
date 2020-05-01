@@ -387,6 +387,11 @@ class SerialIKSolver:
         # to contain the rotation of barZ_to_littleX, littleX_to_littleY, littleY_to_littleZ
         self._T_down_to_up_rot = np.mat(np.eye(4))
 
+        # since there is a world medium between world and supportX, so we need to give initial x and y offset
+        # will be changed in listen_to_fixed_tf
+        self._initial_x_offset = 0.0
+        self._initial_y_offset = 0.0
+
         self._Z_OFFSET = 0.475 # default to 0.475, will be changed in listen_to_fixed_tf
 
         self._T_up_to_wx_no_alpha = Translation('x', 0.03) * Translation('z', 0.63) * Rotation('y', np.pi/4.0) * Rotation('z', -np.pi/2.0)
@@ -406,6 +411,17 @@ class SerialIKSolver:
             [bool] -- if successfully listen to transform from down_link to up_link return True, else resturn False
         """
 
+        # get original offset between world and world_medium_link
+        try:
+            transform_stamped = self._tfBuffer.lookup_transform('world', 'world_medium_link', rospy.Time())   
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rospy.logerr("Transform from world to world_medium_link lookup exception")
+            return False
+        self._initial_x_offset = transform_stamped.transform.translation.x
+        self._initial_y_offset = transform_stamped.transform.translation.y
+        
+        rospy.loginfo("Initially at ({}, {})".format(self._initial_x_offset, self._initial_y_offset))
+        
         # get original offset between down_link and up_link
         try:
             transform_stamped = self._tfBuffer.lookup_transform('down_link', 'up_link', rospy.Time())   
@@ -738,8 +754,8 @@ class SerialIKSolver:
         # parallel_pose_desired to specify the pose of the car
         parallel_pose_desired =  ParallelPose()
 
-        parallel_pose_desired.x = car_x
-        parallel_pose_desired.y = car_y
+        parallel_pose_desired.x = car_x - self._initial_x_offset
+        parallel_pose_desired.y = car_y - self._initial_y_offset
         parallel_pose_desired.theta = car_theta
 
         # serial_pose_desired to specify the motion of three prismatic joints and three revolute joints

@@ -25,7 +25,7 @@ class BaseAndMechDriver:
             action_ns {str} -- action namespace (default: {'/parallel_car/support_and_mech_controller/follow_joint_trajectory'})
         """
 
-        self._joint_names = ['world_to_supportX', 'supportX_to_supportY', 'supportY_to_car', # for movement of base
+        self._joint_names = ['world_medium_to_supportX', 'supportX_to_supportY', 'supportY_to_car', # for movement of base
          'car_to_barX', 'barX_to_barY', 'barY_to_barZ', # for translation of mech
          'barZ_to_littleX', 'littleX_to_littleY', 'littleY_to_littleZ'] # for rotation of mech
 
