@@ -69,6 +69,8 @@ def auto_move():
     # go to initial pose
     driver.init_pose()
 
+    raw_input("Enter to go to resting poses")
+
     # send the trajectory point one by one
     driver.send_trajectory()
 
@@ -161,7 +163,7 @@ if __name__ == "__main__":
 
     seri_ik = SerialIKSolver(run_env=RUN_ENV)
 
-    mbx_file_path = "../data/mbx_planned_trajectory.txt"
+    mbx_file_path = "../data/mbx_planned_trajectory_nutation.txt"
 
     driver = BaseAndMechDriver(file_path=mbx_file_path)
 
