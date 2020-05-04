@@ -12,6 +12,8 @@ from parallel_car.TransRotGen import Rotation, Translation, quaternion_to_rotati
 import numpy as np
 import matplotlib.pyplot as plt
 
+import csv
+
 CAR_HEIGHT = 0.36
 ADDON_LENGTH = 0.5
 
@@ -148,7 +150,7 @@ class ParallelIKSolver:
     """A parallel mechanism IK solver class for listening to tf msgs and calculating length of poles
 
     """
-    def __init__(self, pole_num=6, history_num=500, run_env="rviz"):
+    def __init__(self, pole_num=6, history_num=500, run_env="rviz", file_name="pole_length.csv"):
         """Constructor for ParallelIKSolver
         
         Keyword Arguments:
@@ -198,6 +200,12 @@ class ParallelIKSolver:
             self._o_to_down_height = CAR_HEIGHT/2.0
         else: # run_env== 'gazebo'
             self._o_to_down_height = CAR_HEIGHT
+
+        self._file_name = file_name
+        self._file = open(self._file_name, 'a')
+        self._writer = csv.writer(self._file)
+        pole_names = ['pole'+str(idx+1) for idx in range(self._pole_num)]
+        self._writer.writerow(pole_names)
 
     def listen_to_tf(self):
         """Use tf listener to get tf from up joint to down joint, i.e. origin is down joint
@@ -367,11 +375,11 @@ class ParallelIKSolver:
         for idx in range(self._pole_num):
             print "pole {} is {} meter".format(idx+1, self._pole_length_list[idx])
 
-    def draw_pole_length_list_history(self, lower_bound=0, upper_bound=0):
+    def draw_pole_length_list_history(self, lower_bound=0, upper_bound=0, ndiv=5):
         
         self._draw_counter += 1
         # so should draw at 5 Hz
-        if self._draw_counter % 5 ==0:
+        if self._draw_counter % ndiv ==0:
             plt.clf()
             for idx in range(self._pole_num):
                 plt.plot(self._pole_length_list_history[idx], label='pole'+str(idx+1))
@@ -385,6 +393,14 @@ class ParallelIKSolver:
             plt.pause(0.01)
 
             self._draw_counter = 0
+    
+    def write_pole_length_list_into_file(self):
+
+        self._writer.writerow(self._pole_length_list)
+
+    def close_file(self):
+
+        self._file.close()
 
     def get_pole_length_list(self):
         """Return a copy version of self._pole_length_list

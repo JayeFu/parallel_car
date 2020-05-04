@@ -30,6 +30,7 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         if para_ik.listen_to_tf():
             para_ik.calculate_pole_length_from_inherent()
+            para_ik.write_pole_length_list_into_file()
             # para_ik.print_pole_length()
             para_ik.draw_pole_length_list_history(lower_bound=0.35, upper_bound=0.55)
         else:
@@ -38,4 +39,5 @@ if __name__ == "__main__":
         try:
             rate_fast.sleep()
         except (rospy.ROSInterruptException, EOFError):
+            para_ik.close_file()
             print "\nManual ending"
