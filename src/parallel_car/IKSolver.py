@@ -177,9 +177,9 @@ class ParallelIKSolver:
             self._pole_length_list_history.append(list())
 
         # some settings about plt
+
         plt.ion()
         plt.show()
-        plt.grid(True)
         
         # if _draw_counter % 5 == 0 then draw, thus should draw 50/5=10Hz
         self._draw_counter = 0
@@ -375,6 +375,11 @@ class ParallelIKSolver:
             plt.clf()
             for idx in range(self._pole_num):
                 plt.plot(self._pole_length_list_history[idx], label='pole'+str(idx+1))
+            ax = plt.subplot(1,1,1)
+            ax.set_yticks([lower_bound, upper_bound], minor=True)
+            ax.set_yticks(np.linspace(0.3, 0.6, num=4), minor=False)
+            ax.yaxis.grid(True, which='minor')
+            ax.yaxis.grid(True, which='major')
             plt.legend()
             plt.draw()
             plt.pause(0.01)
