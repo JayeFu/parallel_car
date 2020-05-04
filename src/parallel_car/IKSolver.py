@@ -10,6 +10,7 @@ import copy
 from parallel_car.TransRotGen import Rotation, Translation, quaternion_to_rotation_matrix, vector3_to_translation_matrix
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 CAR_HEIGHT = 0.36
 ADDON_LENGTH = 0.5
@@ -174,6 +175,14 @@ class ParallelIKSolver:
         self._pole_length_list_history = list()
         for idx in range(self._pole_num):
             self._pole_length_list_history.append(list())
+
+        # some settings about plt
+        plt.ion()
+        plt.show()
+        plt.grid(True)
+        
+        # if _draw_counter % 5 == 0 then draw, thus should draw 50/5=10Hz
+        self._draw_counter = 0
 
         # a list of transfromation from down_link to down_i (i from 1 to 6), fixed tf, no change afterwards
         self._down_to_down_num_tf_list = list()
@@ -357,6 +366,20 @@ class ParallelIKSolver:
         rospy.loginfo("pole length from inherent!")
         for idx in range(self._pole_num):
             print "pole {} is {} meter".format(idx+1, self._pole_length_list[idx])
+
+    def draw_pole_length_list_history(self, lower_bound=0, upper_bound=0):
+        
+        self._draw_counter += 1
+        # so should draw at 5 Hz
+        if self._draw_counter % 5 ==0:
+            plt.clf()
+            for idx in range(self._pole_num):
+                plt.plot(self._pole_length_list_history[idx], label='pole'+str(idx+1))
+            plt.legend()
+            plt.draw()
+            plt.pause(0.01)
+
+            self._draw_counter = 0
 
     def get_pole_length_list(self):
         """Return a copy version of self._pole_length_list

@@ -30,11 +30,12 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         if para_ik.listen_to_tf():
             para_ik.calculate_pole_length_from_inherent()
-            para_ik.print_pole_length()
+            # para_ik.print_pole_length()
+            para_ik.draw_pole_length_list_history()
         else:
             rospy.logerr("failed to listen to tf from down_num to up_num")
 
         try:
             rate_fast.sleep()
-        except rospy.ROSInterruptException:
+        except (rospy.ROSInterruptException, EOFError):
             print "\nManual ending"
