@@ -147,7 +147,7 @@ class ParallelIKSolver:
     """A parallel mechanism IK solver class for listening to tf msgs and calculating length of poles
 
     """
-    def __init__(self, pole_num=6, run_env="rviz"):
+    def __init__(self, pole_num=6, history_num=500, run_env="rviz"):
         """Constructor for ParallelIKSolver
         
         Keyword Arguments:
@@ -166,6 +166,14 @@ class ParallelIKSolver:
 
         # a list for the length of pole_num poles
         self._pole_length_list = list()
+
+        # num of history of pole length to maintain
+        self._history_num = history_num
+
+        # a list to contain the history of length of pole_num poles
+        self._pole_length_list_history = list()
+        for idx in range(self._pole_num):
+            self._pole_length_list_history.append(list())
 
         # a list of transfromation from down_link to down_i (i from 1 to 6), fixed tf, no change afterwards
         self._down_to_down_num_tf_list = list()
@@ -214,6 +222,11 @@ class ParallelIKSolver:
             z = vector3_list[idx].z
             length = math.sqrt(math.pow(x,2) + math.pow(y,2) + math.pow(z,2))
             self._pole_length_list.append(length)
+            self._pole_length_list_history[idx].append(length)
+            # _pole_length_list_history should not longer than _history_num
+            while len(self._pole_length_list_history[idx]) > self._history_num:
+                # thus pop the earliest 
+                self._pole_length_list_history[idx].pop(0)
 
     def listen_to_up_down_fixed_tf(self):
 
