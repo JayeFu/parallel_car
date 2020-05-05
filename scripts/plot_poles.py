@@ -31,6 +31,12 @@ if __name__ == "__main__":
     # bounds
     lower_bound = 0.35
     upper_bound = 0.55
+
+    # get time sequence
+    time_array = pole_length_array[:,0]
+    # subtract start offest
+    time_start = time_array[0]
+    time_array = time_array - time_start
     
     for row_idx in range(plot_row):
         for col_idx in range(plot_col):
@@ -38,7 +44,7 @@ if __name__ == "__main__":
             # get the handle of the subplot
             ax = axes[row_idx][col_idx]
             # plot the data
-            ax.plot(pole_length_array[:,num_idx], label='pole'+str(num_idx+1), color=color_list[num_idx])
+            ax.plot(time_array, pole_length_array[:,num_idx+1], label='pole'+str(num_idx+1), color=color_list[num_idx])
             # set y grids
             ax.set_yticks([lower_bound, upper_bound], minor=True)
             ax.set_yticks(np.linspace(0.3, 0.6, num=4), minor=False)
