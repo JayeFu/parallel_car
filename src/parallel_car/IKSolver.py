@@ -150,7 +150,7 @@ class ParallelIKSolver:
     """A parallel mechanism IK solver class for listening to tf msgs and calculating length of poles
 
     """
-    def __init__(self, pole_num=6, history_num=500, run_env="rviz", file_name="pole_length.csv"):
+    def __init__(self, pole_num=6, history_num=500, run_env="rviz", file_name="pole_length.csv", run_freq=20.0):
         """Constructor for ParallelIKSolver
         
         Keyword Arguments:
@@ -201,11 +201,20 @@ class ParallelIKSolver:
         else: # run_env== 'gazebo'
             self._o_to_down_height = CAR_HEIGHT
 
+        # run frequency in nodes
+        self._run_freq = run_freq
+        
+        # store file name, maybe not useful?
         self._file_name = file_name
+        # open the file
         self._file = open(self._file_name, 'a')
+        # create a csv writer
         self._writer = csv.writer(self._file)
         pole_names = ['pole'+str(idx+1) for idx in range(self._pole_num)]
-        self._writer.writerow(pole_names)
+        # combine time tag with pole names
+        output_row = ['time'] + pole_names
+        # write tags into the file
+        self._writer.writerow(output_row)
 
     def listen_to_tf(self):
         """Use tf listener to get tf from up joint to down joint, i.e. origin is down joint
@@ -381,22 +390,45 @@ class ParallelIKSolver:
         # so should draw at 5 Hz
         if self._draw_counter % ndiv ==0:
             plt.clf()
+            # get the number of points in pole length history
+            pt_num = len(self._pole_length_list_history[0])
+            # interval between appending pole length data
+            run_interval = 1.0/self._run_freq
+            # calculate x-axis of graph
+            x_axis = np.linspace(-run_interval*(pt_num-1), 0, num=pt_num)
+            # plot all poles into one graph
             for idx in range(self._pole_num):
-                plt.plot(self._pole_length_list_history[idx], label='pole'+str(idx+1))
+                plt.plot(x_axis, self._pole_length_list_history[idx], label='pole'+str(idx+1))
+            # get handle of current pic
             ax = plt.subplot(1,1,1)
+            # set minor y-axis grid
             ax.set_yticks([lower_bound, upper_bound], minor=True)
+            # set major y-axis grid, will be used for check whether pole length out bounds
             ax.set_yticks(np.linspace(0.3, 0.6, num=4), minor=False)
+            # show minor grids
             ax.yaxis.grid(True, which='minor')
+            # show major grids
             ax.yaxis.grid(True, which='major')
+            # show labels of each line
             plt.legend()
+            # redraw the pic
             plt.draw()
+            # pause for 0.01 secs, but I still do no understand, why 0.01 secs will be enough
+            # this func will call every 0.25 secs
             plt.pause(0.01)
 
             self._draw_counter = 0
     
     def write_pole_length_list_into_file(self):
 
-        self._writer.writerow(self._pole_length_list)
+        # get current time in seconds
+        current_time = rospy.Time.now().to_sec()
+
+        # combine time with pole length list
+        output_row = [current_time] + self._pole_length_list
+        
+        # write time with pole length into file
+        self._writer.writerow(output_row)
 
     def close_file(self):
 
