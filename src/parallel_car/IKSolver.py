@@ -155,6 +155,10 @@ class ParallelIKSolver:
         
         Keyword Arguments:
             pole_num {int} -- the number of poles in the parallel mechanism (default: {6})
+            history_num {int} -- the number of pole length list to store (default: {500})
+            run_env {str} -- the environment for running, if 'rviz' origin is car_link, if 'gazebo' origin is world (default: {'rviz'})
+            file_name {str} -- the file to write pole length data into (default: {'pole_length.csv'})
+            run_freq {float} -- the frequency of running this ik solver, will be used for calculate time interval in plotting (default: {20.0})
         """
         # tf series for listening
         self._tfBuffer = tf2_ros.Buffer()
@@ -255,6 +259,11 @@ class ParallelIKSolver:
                 self._pole_length_list_history[idx].pop(0)
 
     def listen_to_up_down_fixed_tf(self):
+        """Function used for listening to fixed tf in both up link and down link
+
+        Returns:
+            [bool] -- if successfully listen to all fixed tfs return True, else any exceptions occur in looking up transform return False
+        """
 
         # down
         try:
@@ -385,6 +394,13 @@ class ParallelIKSolver:
             print "pole {} is {} meter".format(idx+1, self._pole_length_list[idx])
 
     def draw_pole_length_list_history(self, lower_bound=0, upper_bound=0, ndiv=5):
+        """Function used for plot pole length history
+
+        Keyword Arguments:
+            lower_bound {int} -- lower bound for draw grid in y-axis (default: {0})
+            upper_bound {int} -- upper bound for draw grid in y-axis (default: {0})
+            ndiv {int} -- frequency division in drawing graph, i.e. frequency divided by ndiv is the frequency of drawing grpah (default: {5})
+        """
         
         self._draw_counter += 1
         # so should draw at 5 Hz
@@ -420,6 +436,8 @@ class ParallelIKSolver:
             self._draw_counter = 0
     
     def write_pole_length_list_into_file(self):
+        """write pole length list in to file specified by self._file_name
+        """
 
         # get current time in seconds
         current_time = rospy.Time.now().to_sec()
@@ -431,6 +449,8 @@ class ParallelIKSolver:
         self._writer.writerow(output_row)
 
     def close_file(self):
+        """close the file opened in construction function
+        """
 
         self._file.close()
 
