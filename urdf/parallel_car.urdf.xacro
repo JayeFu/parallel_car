@@ -33,16 +33,16 @@
     <link name="car_link"><!--from origin to top-->
         <visual>
             <geometry>
-                <box size="1 0.5 ${car_height}"/>
+                <mesh filename="package://parallel_car/meshes/car.STL" />
      	    </geometry>
             <material name="green"/>
-            <origin rpy="0.0 0.0 0.0" xyz="0 0 0.0"/>
+            <origin rpy="${PI/2.0} 0.0 0.0" xyz="0 0 -0.12"/>
         </visual>
         <collision>
             <geometry>
-                <box size="1 0.5 0.36"/>
+                <mesh filename="package://parallel_car/meshes/car.STL" />
      	    </geometry>
-            <origin rpy="0.0 0.0 0.0" xyz="0 0 0.0"/>
+            <origin rpy="${PI/2.0} 0.0 0.0" xyz="0 0 -0.12"/>
         </collision>
         <inertial>
             <mass value="${car_mass}"/>
