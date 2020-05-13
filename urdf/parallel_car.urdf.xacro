@@ -139,19 +139,19 @@
 
     <link name="wx_visual_link">
         <inertial>
-            <origin xyz="0.03 0.0 0.23" rpy="0.0 0.0 0.0"/>
+            <origin xyz="0.0 0.0 0.0" rpy="${110.0/180.0*PI} 0.0 ${-PI/2.0}"/>
             <mass value="${wx_mass}"/>
             <inertia ixx="${wx_mass}" ixy="0.0" ixz="0.0" iyy="${wx_mass}" iyz="0.0" izz="${wx_mass}"/>
         </inertial>
         <visual>
-            <origin xyz="0.05 0.0 0.25" rpy="${3.0*PI/4.0} 0.0 ${-PI/2.0}"/>
+            <origin xyz="0.0 0.0 0.0" rpy="${110.0/180.0*PI} 0.0 ${-PI/2.0}"/>
             <geometry>
                 <mesh filename="package://parallel_car/meshes/MZ.STL" />
             </geometry>
             <material name="white"/>
         </visual>
         <collision>
-            <origin xyz="0.05 0.0 0.25" rpy="0.0 0.0 0.0"/>
+            <origin xyz="0.0 0.0 0.0" rpy="${110.0/180.0*PI} 0.0 ${-PI/2.0}"/>
             <geometry>
                 <mesh filename="package://parallel_car/meshes/MZ.STL" />
             </geometry>
@@ -230,23 +230,6 @@
         </collision>
     </link>
 
-    <!-- addon links for support of wx_link -->
-
-    <link name="addon_Vertical_link">
-        <inertial>
-            <origin xyz="0.0 0.0 ${addon_length/2.0}" rpy="0.0 0.0 0.0"/>
-            <mass value="${little_mass}"/>
-            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
-        </inertial>
-        <visual>
-            <origin xyz="0.0 0.0 ${addon_length/2.0}" rpy="0.0 0.0 0.0"/>
-            <geometry>
-                <box size="${addon_width} ${addon_width} ${addon_length}"/>
-            </geometry>
-            <material name="purple"/>
-        </visual>
-    </link>
-
 
     <!-- joints -->
 
@@ -298,14 +281,14 @@
         <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="50.0" velocity="2.0"/>
     </joint>
 
-    <joint name="addon_Vertical_to_wx_visual" type="fixed">
-        <origin xyz="0.0 0.0 ${addon_length}" rpy="0.0 0.0 0.0"/>
-        <parent link="addon_Vertical_link"/>
+    <joint name="littleZ_to_wx_visual" type="fixed">
+        <origin xyz="0.35 0.0 0.25" rpy="0.0 0.0 0.0"/>
+        <parent link="littleZ_link"/>
         <child link="wx_visual_link"/>
     </joint>
 
     <joint name="wx_visual_to_wx_medium" type="fixed">
-        <origin xyz="0.03 0.0 0.23" rpy="0.0 ${PI/4.0} 0.0"/>
+        <origin xyz="-0.1 0.0 -0.065" rpy="0.0 ${70.0/180.0*PI} 0.0"/>
         <parent link="wx_visual_link"/>
         <child link="wx_medium_link"/>
     </joint>
@@ -344,13 +327,6 @@
     <xacro:sub_link_joint parent_link="up_link" child_link="up_4" height="${up_height}" radius="${up_radius}" beta="190.0" little_width="${little_width}" little_mass="${little_mass}" />
     <xacro:sub_link_joint parent_link="up_link" child_link="up_5" height="${up_height}" radius="${up_radius}" beta="290.0" little_width="${little_width}" little_mass="${little_mass}" />
     <xacro:sub_link_joint parent_link="up_link" child_link="up_6" height="${up_height}" radius="${up_radius}" beta="310.0" little_width="${little_width}" little_mass="${little_mass}" />
-
-    <!--addon joints-->
-    <joint name="littleZ_to_addon_Vertical" type="fixed">
-        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        <parent link="littleZ_link"/>
-        <child link="addon_Vertical_link"/>
-    </joint>
 
 
 </robot>
