@@ -67,11 +67,6 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        addon_Vertical_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         barX_link:
           Alpha: 1
           Show Axes: false
@@ -251,6 +246,11 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        world_medium_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         wx_link:
           Alpha: 1
           Show Axes: false
@@ -284,8 +284,6 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        addon_Vertical_link:
-          Value: true
         barX_link:
           Value: true
         barY_link:
@@ -297,27 +295,27 @@ Visualization Manager:
         down_1:
           Value: true
         down_1_medium:
-          Value: false
+          Value: true
         down_2:
           Value: true
         down_2_medium:
-          Value: false
+          Value: true
         down_3:
           Value: true
         down_3_medium:
-          Value: false
+          Value: true
         down_4:
           Value: true
         down_4_medium:
-          Value: false
+          Value: true
         down_5:
           Value: true
         down_5_medium:
-          Value: false
+          Value: true
         down_6:
           Value: true
         down_6_medium:
-          Value: false
+          Value: true
         down_link:
           Value: true
         littleX_link:
@@ -333,35 +331,37 @@ Visualization Manager:
         up_1:
           Value: true
         up_1_medium:
-          Value: false
+          Value: true
         up_2:
           Value: true
         up_2_medium:
-          Value: false
+          Value: true
         up_3:
           Value: true
         up_3_medium:
-          Value: false
+          Value: true
         up_4:
           Value: true
         up_4_medium:
-          Value: false
+          Value: true
         up_5:
           Value: true
         up_5_medium:
-          Value: false
+          Value: true
         up_6:
           Value: true
         up_6_medium:
-          Value: false
+          Value: true
         up_link:
           Value: true
         world:
           Value: true
+        world_medium_link:
+          Value: true
         wx_link:
           Value: true
         wx_medium_link:
-          Value: false
+          Value: true
         wx_visual_link:
           Value: true
       Marker Scale: 1
@@ -371,58 +371,58 @@ Visualization Manager:
       Show Names: true
       Tree:
         world:
-          supportX_link:
-            supportY_link:
-              car_link:
-                barX_link:
-                  barY_link:
-                    barZ_link:
-                      littleX_link:
-                        littleY_link:
-                          littleZ_link:
-                            addon_Vertical_link:
+          world_medium_link:
+            supportX_link:
+              supportY_link:
+                car_link:
+                  barX_link:
+                    barY_link:
+                      barZ_link:
+                        littleX_link:
+                          littleY_link:
+                            littleZ_link:
+                              up_link:
+                                up_1_medium:
+                                  up_1:
+                                    {}
+                                up_2_medium:
+                                  up_2:
+                                    {}
+                                up_3_medium:
+                                  up_3:
+                                    {}
+                                up_4_medium:
+                                  up_4:
+                                    {}
+                                up_5_medium:
+                                  up_5:
+                                    {}
+                                up_6_medium:
+                                  up_6:
+                                    {}
                               wx_visual_link:
                                 wx_medium_link:
                                   wx_link:
                                     {}
-                            up_link:
-                              up_1_medium:
-                                up_1:
-                                  {}
-                              up_2_medium:
-                                up_2:
-                                  {}
-                              up_3_medium:
-                                up_3:
-                                  {}
-                              up_4_medium:
-                                up_4:
-                                  {}
-                              up_5_medium:
-                                up_5:
-                                  {}
-                              up_6_medium:
-                                up_6:
-                                  {}
-                down_link:
-                  down_1_medium:
-                    down_1:
-                      {}
-                  down_2_medium:
-                    down_2:
-                      {}
-                  down_3_medium:
-                    down_3:
-                      {}
-                  down_4_medium:
-                    down_4:
-                      {}
-                  down_5_medium:
-                    down_5:
-                      {}
-                  down_6_medium:
-                    down_6:
-                      {}
+                  down_link:
+                    down_1_medium:
+                      down_1:
+                        {}
+                    down_2_medium:
+                      down_2:
+                        {}
+                    down_3_medium:
+                      down_3:
+                        {}
+                    down_4_medium:
+                      down_4:
+                        {}
+                    down_5_medium:
+                      down_5:
+                        {}
+                    down_6_medium:
+                      down_6:
+                        {}
       Update Interval: 0
       Value: true
   Enabled: true
@@ -453,25 +453,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.8810691833496094
+      Distance: 1.2282743453979492
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.4279184639453888
-        Y: -0.6086322665214539
-        Z: 0.9626972079277039
+        X: -0.017040638253092766
+        Y: -0.7444254159927368
+        Z: 0.9760948419570923
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.1853979229927063
+      Pitch: -0.06960201263427734
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.1653733253479004
+      Yaw: 1.5053730010986328
     Saved: ~
 Window Geometry:
   Displays:
