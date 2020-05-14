@@ -165,7 +165,7 @@ if __name__ == "__main__":
 
     seri_ik = SerialIKSolver(run_env=RUN_ENV)
 
-    mbx_file_path = "../data/mbx_planned_trajectory_he.txt"
+    mbx_file_path = "../data/mbx_planned_trajectory_zheng.txt"
 
     driver = BaseAndMechDriver(file_path=mbx_file_path)
 
