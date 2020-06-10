@@ -116,3 +116,56 @@ class DroneMechDriver:
 
         # show the error code
         rospy.loginfo(self._action_client.get_result())
+
+    def send_trajectory(self):
+        
+        # construct a goal
+        goal = FollowJointTrajectoryGoal()
+
+        # add joint names
+        goal.trajectory.joint_names = self._joint_names
+        
+        
+        for traj_idx in range(len(self._time_list)-1):
+
+            # indexing a pose
+            pose = self._pose_list[traj_idx+1]
+
+            rospy.loginfo("At trajectory point {}".format(traj_idx))
+
+            # a joint point in the trajectory
+            trajPt = JointTrajectoryPoint()
+
+            # tranlation positions
+            trajPt.positions.append(pose.x)
+            trajPt.positions.append(pose.y)
+            trajPt.positions.append(pose.z)
+
+            # rotation positions
+            trajPt.positions.append(pose.gamma)
+
+            # append as many velocities as joints
+            for idx in range(len(self._joint_names)):
+                trajPt.velocities.append(0.0)
+
+            # time to reach the joint trajectory point specified to 1.0
+            trajPt.time_from_start = rospy.Duration(secs=self._time_list[traj_idx+1])
+
+            # add the joint trajectory point to the goal
+            goal.trajectory.points.append(trajPt)
+
+        # go to goal ASAP
+        goal.trajectory.header.stamp = rospy.Time.now()
+
+        print "This goal has {} points to go".format(len(goal.trajectory.points))
+
+        # send the goal to the action server
+        self._action_client.send_goal(goal)
+
+        # wait for the result
+        rospy.loginfo("Start waiting for go to the resting poses")
+        self._action_client.wait_for_result()
+        rospy.loginfo("Waiting ends")
+
+        # show the error code
+        rospy.loginfo(self._action_client.get_result())

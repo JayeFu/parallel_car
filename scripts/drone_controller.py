@@ -22,3 +22,6 @@ if __name__ == "__main__":
 
     # go to first pose
     drone.init_pose()
+
+    # go to other poses
+    drone.send_trajectory()
